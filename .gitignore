@@ -1,0 +1,108 @@
+# =========================
+# Operating System
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs
+# =========================
+*.log
+*.pyc
+*.swp
+*.class
+
+# =========================
+# IDEs & Editors
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Uncomment if you don't want to share VS Code settings
+# .vscode/
+
+.atom/
+.history/
+.svn/
+
+# =========================
+# Flutter / Dart
+# =========================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub/
+.pub-cache/
+
+build/
+coverage/
+
+**/doc/api/
+**/ios/Flutter/.last_build_id
+
+# =========================
+# Generated Build Files
+# =========================
+.build/
+.buildlog/
+.swiftpm/
+migrate_working_dir/
+
+# =========================
+# Android
+# =========================
+android/.gradle/
+android/local.properties
+android/key.properties
+
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# Android signing keys
+*.jks
+*.keystore
+
+# =========================
+# iOS
+# =========================
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# =========================
+# macOS
+# =========================
+macos/Pods/
+
+# =========================
+# Linux
+# =========================
+linux/flutter/ephemeral/
+
+# =========================
+# Windows
+# =========================
+windows/flutter/ephemeral/
+
+# =========================
+# Environment Variables
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# Firebase
+# =========================
+firebase-debug.log
+
+# =========================
+# Symbolication / Obfuscation
+# =========================
+app.*.symbols
+app.*.map.json
