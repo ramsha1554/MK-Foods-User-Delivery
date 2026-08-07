@@ -87,6 +87,20 @@ class CustomerRepository {
     return Address.fromJson(response.data as Map<String, dynamic>);
   }
 
+  Future<Address> updateAddress(String id, SaveAddressRequest request) async {
+    AppLog.i('[API]', 'updateAddress', 'Updating address', {'addressId': id});
+    final response = await _apiClient.patch(
+      ApiEndpoints.addressById(id),
+      body: request.toJson(),
+    );
+    return Address.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteAddress(String id) async {
+    AppLog.i('[API]', 'deleteAddress', 'Deleting address', {'addressId': id});
+    await _apiClient.delete(ApiEndpoints.addressById(id));
+  }
+
   
 
   // ────────────────────────────────────────────

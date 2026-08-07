@@ -11,6 +11,7 @@ Future<void> setupLocator() async {
 
   final authStorage = locator<AuthStorageService>();
   await authStorage.init();
+  print('MY_TOKEN: ${authStorage.accessToken}');
 
   final apiClient = ApiClient();
   if (authStorage.accessToken != null) {

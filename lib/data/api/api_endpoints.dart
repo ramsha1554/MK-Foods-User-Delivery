@@ -15,6 +15,7 @@ class ApiEndpoints {
 
   // ── Addresses (Customer) ──
   static const String addresses = '/addresses';
+  static String addressById(String id) => '/addresses/$id';
   static String addressDefault(String id) => '/addresses/$id/default';
 
   

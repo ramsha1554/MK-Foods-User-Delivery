@@ -43,14 +43,19 @@ class AddressListScreen extends ConsumerWidget {
                               ref.read(addressProvider.notifier).setDefaultAddress(address.id);
                             }
                           },
+                          onEdit: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => AddAddressScreen(editAddress: address),
+                            ),
+                          ),
+                          onDelete: () => _confirmDelete(context, ref, address),
                         );
                       },
                     ),
                   ),
       ),
-      floatingActionButton: isEmpty
-          ? null
-          : FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const AddAddressScreen()),
@@ -105,17 +110,54 @@ class AddressListScreen extends ConsumerWidget {
       ),
     );
   }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Address address) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete address?'),
+        content: Text('"${address.fullAddress}" will be permanently removed.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      final success = await ref.read(addressProvider.notifier).deleteAddress(address.id);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(success ? 'Address deleted.' : 'Failed to delete address.'),
+            backgroundColor: success ? AppColors.success : AppColors.error,
+          ),
+        );
+      }
+    }
+  }
 }
 
 class _AddressCard extends StatelessWidget {
   final Address address;
   final bool isDefault;
   final VoidCallback onSelectDefault;
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const _AddressCard({
     required this.address,
     required this.isDefault,
     required this.onSelectDefault,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   IconData _getIconForLabel(String label) {
@@ -130,6 +172,50 @@ class _AddressCard extends StatelessWidget {
     }
   }
 
+  void _showActions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: AppSpacing.sm),
+            ListTile(
+              leading: const Icon(LucideIcons.pencil, color: AppColors.textPrimary),
+              title: const Text('Update Address', style: AppTextStyles.body),
+              onTap: () {
+                Navigator.pop(ctx);
+                onEdit();
+              },
+            ),
+            ListTile(
+              leading: const Icon(LucideIcons.trash2, color: AppColors.error),
+              title: const Text('Delete Address', style: TextStyle(color: AppColors.error)),
+              onTap: () {
+                Navigator.pop(ctx);
+                onDelete();
+              },
+            ),
+            const Divider(height: 1, color: AppColors.divider),
+            ListTile(
+              title: const Text(
+                'Cancel',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.bodySecondary,
+              ),
+              onTap: () => Navigator.pop(ctx),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -142,84 +228,118 @@ class _AddressCard extends StatelessWidget {
           width: isDefault ? 1.5 : 1,
         ),
       ),
-      child: InkWell(
-        onTap: onSelectDefault,
+      child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(AppSpacing.lg),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Compact custom selection dot — replaces the heavy default Radio widget.
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: isDefault ? AppColors.primary : AppColors.textHint,
-                      width: 2,
-                    ),
-                  ),
-                  child: isDefault
-                      ? Center(
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.primary,
-                            ),
-                          ),
-                        )
-                      : null,
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: onSelectDefault,
+              child: Padding(
+                padding: const EdgeInsets.all(AppSpacing.lg),
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Icon(_getIconForLabel(address.label), size: 16, color: AppColors.primary),
-                        const SizedBox(width: 6),
-                        Text(address.label, style: AppTextStyles.cardTitle),
-                        if (isDefault) ...[
-                          const SizedBox(width: AppSpacing.sm),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: AppColors.primaryLight,
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: Text('Default', style: AppTextStyles.badge.copyWith(color: AppColors.primary)),
+                    // Selection dot
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2),
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isDefault ? AppColors.primary : AppColors.textHint,
+                            width: 2,
                           ),
-                        ],
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text(address.fullAddress, style: AppTextStyles.body),
-                    if (address.deliveryInstructions != null && address.deliveryInstructions!.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.sm),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(LucideIcons.info, size: 13, color: AppColors.textSecondary),
-                          const SizedBox(width: 5),
-                          Expanded(
-                            child: Text(address.deliveryInstructions!, style: AppTextStyles.caption),
-                          ),
-                        ],
+                        ),
+                        child: isDefault
+                            ? Center(
+                                child: Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                              )
+                            : null,
                       ),
-                    ],
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+
+                    // Icon avatar
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primaryLight,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(_getIconForLabel(address.label), size: 18, color: AppColors.primary),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+
+                    // Label + address + instructions
+                    Expanded(
+                      child: Padding(
+                        // Right padding keeps text clear of the corner badge above it
+                        // and the menu button beside it, regardless of text length.
+                        padding: const EdgeInsets.only(right: 28, top: 2),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(address.label, style: AppTextStyles.cardTitle),
+                            const SizedBox(height: 4),
+                            Text(address.fullAddress, style: AppTextStyles.body),
+                            if (address.deliveryInstructions != null &&
+                                address.deliveryInstructions!.isNotEmpty) ...[
+                              const SizedBox(height: AppSpacing.sm),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(LucideIcons.info, size: 13, color: AppColors.textSecondary),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: Text(address.deliveryInstructions!, style: AppTextStyles.caption),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // Menu button — floats independently, never competes for row space.
+            Positioned(
+              top: AppSpacing.sm,
+              right: AppSpacing.xs,
+              child: IconButton(
+                icon: const Icon(LucideIcons.ellipsisVertical, size: 18, color: AppColors.textSecondary),
+                onPressed: () => _showActions(context),
+              ),
+            ),
+
+            // "Default" ribbon — pinned to the corner, independent of label length.
+            if (isDefault)
+              Positioned(
+                top: AppSpacing.sm,
+                right: 44,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryLight,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text('Default', style: AppTextStyles.badge.copyWith(color: AppColors.primary)),
+                ),
+              ),
+          ],
         ),
       ),
     );

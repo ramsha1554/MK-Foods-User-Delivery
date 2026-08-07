@@ -9,6 +9,7 @@ class AddressState {
   final Address? defaultAddress;
   final bool isLoading;
   final bool isSaving;
+  final bool isDeleting;
   final String? errorMessage;
 
   const AddressState({
@@ -16,6 +17,7 @@ class AddressState {
     this.defaultAddress,
     this.isLoading = false,
     this.isSaving = false,
+    this.isDeleting = false,
     this.errorMessage,
   });
 
@@ -24,6 +26,7 @@ class AddressState {
     Address? defaultAddress,
     bool? isLoading,
     bool? isSaving,
+    bool? isDeleting,
     String? errorMessage,
     bool clearError = false,
   }) {
@@ -32,6 +35,7 @@ class AddressState {
       defaultAddress: defaultAddress ?? this.defaultAddress,
       isLoading: isLoading ?? this.isLoading,
       isSaving: isSaving ?? this.isSaving,
+      isDeleting: isDeleting ?? this.isDeleting,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
@@ -129,6 +133,70 @@ class AddressNotifier extends StateNotifier<AddressState> {
 
   void clearError() {
     state = state.copyWith(clearError: true);
+  }
+
+  Future<bool> updateAddress(String id, SaveAddressRequest request) async {
+    state = state.copyWith(isSaving: true, clearError: true);
+    try {
+      final updated = await _repository.updateAddress(id, request);
+      final updatedList = state.addresses.map((addr) {
+        if (addr.id == id) return updated;
+        // If the updated address is now default, clear default on others
+        if (updated.isDefault) return addr.copyWith(isDefault: false);
+        return addr;
+      }).toList();
+
+      Address? newDefault = state.defaultAddress;
+      if (updated.isDefault) {
+        newDefault = updated;
+      } else if (state.defaultAddress?.id == id && !updated.isDefault) {
+        // Default was removed — promote first address
+        newDefault = updatedList.firstWhere(
+          (a) => a.isDefault,
+          orElse: () => updatedList.first,
+        );
+      }
+
+      state = state.copyWith(
+        addresses: updatedList,
+        defaultAddress: newDefault,
+        isSaving: false,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isSaving: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> deleteAddress(String id) async {
+    state = state.copyWith(isDeleting: true, clearError: true);
+    try {
+      await _repository.deleteAddress(id);
+      final updatedList = state.addresses.where((a) => a.id != id).toList();
+
+      Address? newDefault = state.defaultAddress;
+      if (state.defaultAddress?.id == id) {
+        // Deleted the default — promote the first remaining address
+        newDefault = updatedList.isNotEmpty ? updatedList.first : null;
+      }
+
+      state = state.copyWith(
+        addresses: updatedList,
+        defaultAddress: newDefault,
+        isDeleting: false,
+      );
+      return true;
+    } catch (e) {
+      state = state.copyWith(
+        isDeleting: false,
+        errorMessage: e.toString().replaceAll('Exception: ', ''),
+      );
+      return false;
+    }
   }
 }
 

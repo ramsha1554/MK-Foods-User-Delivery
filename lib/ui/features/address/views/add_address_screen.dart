@@ -9,7 +9,8 @@ import '../../../core/theme/app_text_styles.dart';
 import '../providers/address_provider.dart';
 
 class AddAddressScreen extends ConsumerStatefulWidget {
-  const AddAddressScreen({super.key});
+  final Address? editAddress;
+  const AddAddressScreen({super.key, this.editAddress});
 
   @override
   ConsumerState<AddAddressScreen> createState() => _AddAddressScreenState();
@@ -31,12 +32,35 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
   late bool _isDefault;
   bool _isFirstAddress = false;
 
+  bool get _isEditMode => widget.editAddress != null;
+
   @override
   void initState() {
     super.initState();
-    final addressState = ref.read(addressProvider);
-    _isFirstAddress = addressState.addresses.isEmpty;
-    _isDefault = _isFirstAddress;
+    final editAddr = widget.editAddress;
+    if (editAddr != null) {
+      // Edit mode — pre-fill all fields from the existing address
+      final knownLabels = ['Home', 'Office', 'Other'];
+      final isKnown = knownLabels.contains(editAddr.label);
+      _selectedLabel = isKnown ? editAddr.label : 'Other';
+      if (!isKnown) _customLabelController.text = editAddr.label;
+      _fullAddressController.text = editAddr.fullAddress;
+      _streetController.text = editAddr.street ?? '';
+      _cityController.text = editAddr.city ?? '';
+      _postcodeController.text = editAddr.postcode ?? '';
+      if (editAddr.location != null && editAddr.location!.coordinates.length >= 2) {
+        _lngController.text = editAddr.location!.coordinates[0].toString();
+        _latController.text = editAddr.location!.coordinates[1].toString();
+      }
+      _instructionsController.text = editAddr.deliveryInstructions ?? '';
+      _isDefault = editAddr.isDefault;
+      _isFirstAddress = false;
+    } else {
+      // Add mode
+      final addressState = ref.read(addressProvider);
+      _isFirstAddress = addressState.addresses.isEmpty;
+      _isDefault = _isFirstAddress;
+    }
   }
 
   @override
@@ -72,10 +96,16 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
           _instructionsController.text.trim().isEmpty ? null : _instructionsController.text.trim(),
     );
 
-    final success = await ref.read(addressProvider.notifier).saveAddress(request);
+    final bool success;
+    if (_isEditMode) {
+      success = await ref.read(addressProvider.notifier).updateAddress(widget.editAddress!.id, request);
+    } else {
+      success = await ref.read(addressProvider.notifier).saveAddress(request);
+    }
+
     if (success && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Address saved successfully!')),
+        SnackBar(content: Text(_isEditMode ? 'Address updated!' : 'Address saved successfully!')),
       );
       Navigator.pop(context);
     }
@@ -87,7 +117,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(title: const Text('Add Delivery Address')),
+      appBar: AppBar(title: Text(_isEditMode ? 'Edit Address' : 'Add Delivery Address')),
       body: AppFadeIn(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -290,7 +320,10 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                             height: 22,
                             child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                           )
-                        : const Text('Save Address', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                        : Text(
+                            _isEditMode ? 'Update Address' : 'Save Address',
+                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ],
