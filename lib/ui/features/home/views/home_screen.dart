@@ -12,6 +12,8 @@ import '../../profile/views/profile_screen.dart';
 import '../../address/providers/address_provider.dart';
 import '../../address/views/address_list_screen.dart';
 import '../../auth/providers/auth_provider.dart';
+import '../../auth/views/onboarding_screen.dart';
+import '../../../../core/animations/app_page_transitions.dart';
 import '../../restaurant/providers/restaurant_provider.dart';
 import '../../restaurant/views/restaurant_detail_screen.dart';
 import '../../restaurant/widgets/restaurant_card.dart';
@@ -46,6 +48,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+
+    ref.listen<AuthState>(authProvider, (prev, next) {
+      if (next.status == AuthStatus.unauthenticated) {
+        Navigator.of(context).pushAndRemoveUntil(
+          SlideUpPageRoute(page: const OnboardingScreen()),
+          (route) => false,
+        );
+      }
+    });
+
+  
     final addressState = ref.watch(addressProvider);
     final restaurantState = ref.watch(restaurantProvider);
     final defaultAddress = addressState.defaultAddress;

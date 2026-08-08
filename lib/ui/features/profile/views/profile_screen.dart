@@ -101,9 +101,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ],
       ),
     );
-    
-  }
 
+    if (confirmed != true || !mounted) return;
+
+    await ref.read(authProvider.notifier).logout();
+  }
   @override
   Widget build(BuildContext context) {
     final profileAsync = ref.watch(profileProvider);

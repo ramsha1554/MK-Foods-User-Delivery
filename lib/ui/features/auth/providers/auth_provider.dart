@@ -43,9 +43,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   AuthNotifier(this._repository, this._storage, this._apiClient)
       : super(const AuthState()) {
+    // The interceptor calls this when a request 401s and the refresh token
+    // is also missing/expired, so the app falls back to the login flow the
+    // same way an explicit logout does.
+    _apiClient.onSessionExpired = _clearSession;
     _init();
   }
-
  
 
   Future<void> _init() async {
@@ -124,6 +127,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout() async {
+    await _clearSession();
+  }
+
+  Future<void> _clearSession() async {
     await _storage.clear();
     _apiClient.setToken(null);
     state = const AuthState(status: AuthStatus.unauthenticated);

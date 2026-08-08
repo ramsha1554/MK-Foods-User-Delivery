@@ -7,6 +7,7 @@ class ApiEndpoints {
   // ── Auth ──
   static const String requestOtp = '/auth/request-otp';
   static const String verifyOtp = '/auth/verify-otp';
+  static const String refreshToken = '/auth/refresh-token';
 
   // ── User ──
   static const String userMe = '/users/me';

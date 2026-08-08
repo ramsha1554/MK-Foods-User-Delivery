@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 
 import '../../core/network/app_log_interceptor.dart';
+import '../../core/network/auth_interceptor.dart';
 import 'api_endpoints.dart';
 import '../models/api_response.dart';
+import '../services/auth_storage_service.dart';
 
 class ApiException implements Exception {
   final int statusCode;
@@ -40,10 +42,25 @@ class NetworkException implements Exception {
 
 class ApiClient {
   final Dio _dio;
+  final AuthStorageService _authStorage;
 
-  ApiClient({Dio? dio})
-      : _dio = dio ??
-            _createDio();
+  /// Invoked when a request fails with 401 and the refresh attempt also
+  /// fails (missing or expired refresh token). Set by whatever owns the
+  /// session lifecycle (see `AuthNotifier`) so this networking layer never
+  /// needs to know about app state or navigation directly.
+  Future<void> Function()? onSessionExpired;
+
+  ApiClient({required AuthStorageService authStorage, Dio? dio})
+      : _authStorage = authStorage,
+        _dio = dio ?? _createDio() {
+    _dio.interceptors.add(
+      AuthInterceptor(
+        dio: _dio,
+        storage: _authStorage,
+        onSessionExpired: () async => onSessionExpired?.call(),
+      ),
+    );
+  }
 
   String? get token => _dio.options.headers['Authorization']?.toString().replaceFirst('Bearer ', '');
 
