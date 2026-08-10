@@ -1,3 +1,5 @@
+
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +15,7 @@ class AuthStorageService {
   static const String _userIdKey = 'user_id';
   static const String _userPhoneKey = 'user_phone';
   static const String _userNameKey = 'user_name';
+  static const String _userEmailKey = 'user_email';
 
   final FlutterSecureStorage _secureStorage;
 
@@ -24,11 +27,13 @@ class AuthStorageService {
   String? _userId;
   String? _userPhone;
   String? _userName;
+  String? _userEmail;
 
   String? get accessToken => _accessToken;
   String? get userId => _userId;
   String? get userPhone => _userPhone;
   String? get userName => _userName;
+  String? get userEmail => _userEmail;
   String? get refreshToken => _refreshToken;
 
   Future<void> init() async {
@@ -39,6 +44,7 @@ class AuthStorageService {
     _userId = prefs.getString(_userIdKey);
     _userPhone = prefs.getString(_userPhoneKey);
     _userName = prefs.getString(_userNameKey);
+    _userEmail = prefs.getString(_userEmailKey);
   }
 
   Future<void> saveAuth({
@@ -47,12 +53,14 @@ class AuthStorageService {
     required String userId,
     required String phone,
     String? name,
+    String? email,
   }) async {
     _accessToken = accessToken;
     _refreshToken = refreshToken;
     _userId = userId;
     _userPhone = phone;
     _userName = name;
+    _userEmail = email;
 
     await _secureStorage.write(key: _accessTokenKey, value: accessToken);
     await _secureStorage.write(key: _refreshTokenKey, value: refreshToken);
@@ -60,8 +68,17 @@ class AuthStorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_userIdKey, userId);
     await prefs.setString(_userPhoneKey, phone);
-    if (name != null) {
+
+  
+    if (name != null && name.isNotEmpty) {
       await prefs.setString(_userNameKey, name);
+    } else {
+      await prefs.remove(_userNameKey);
+    }
+    if (email != null && email.isNotEmpty) {
+      await prefs.setString(_userEmailKey, email);
+    } else {
+      await prefs.remove(_userEmailKey);
     }
   }
 
@@ -84,6 +101,12 @@ class AuthStorageService {
     await prefs.setString(_userNameKey, name);
   }
 
+  Future<void> saveEmail(String email) async {
+    _userEmail = email;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userEmailKey, email);
+  }
+
   bool get isLoggedIn => _accessToken != null;
 
   Future<void> clear() async {
@@ -92,6 +115,7 @@ class AuthStorageService {
     _userId = null;
     _userPhone = null;
     _userName = null;
+    _userEmail = null;
 
     await _secureStorage.delete(key: _accessTokenKey);
     await _secureStorage.delete(key: _refreshTokenKey);
@@ -100,5 +124,6 @@ class AuthStorageService {
     await prefs.remove(_userIdKey);
     await prefs.remove(_userPhoneKey);
     await prefs.remove(_userNameKey);
+    await prefs.remove(_userEmailKey);
   }
 }

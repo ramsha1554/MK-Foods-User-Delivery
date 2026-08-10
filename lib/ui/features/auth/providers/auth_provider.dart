@@ -1,3 +1,8 @@
+
+
+
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/di/locator.dart';
@@ -61,12 +66,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
           id: _storage.userId ?? '',
           phone: _storage.userPhone ?? '',
           name: _storage.userName,
+          email: _storage.userEmail,
           role: 'customer',
           isVerified: true,
         ),
       );
+      // Local cache can be stale (e.g. name/email changed on the backend
+      // since the last login). Refresh from the server in the background
+      // so the UI shows current data instead of whatever was cached.
+      unawaited(_refreshProfileFromServer());
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
+    }
+  }
+
+  Future<void> _refreshProfileFromServer() async {
+    try {
+      final freshUser = await _repository.getProfile();
+      await _storage.saveAuth(
+        accessToken: _storage.accessToken!,
+        refreshToken: _storage.refreshToken!,
+        userId: freshUser.id,
+        phone: freshUser.phone,
+        name: freshUser.name,
+        email: freshUser.email,
+      );
+      state = state.copyWith(user: freshUser);
+    } catch (_) {
+      // Offline or the call failed — keep showing the cached data rather
+      // than blocking startup or surfacing an error for a background sync.
     }
   }
 
@@ -100,6 +128,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         userId: authData.user.id,
         phone: authData.user.phone,
         name: authData.user.name,
+        email: authData.user.email,
       );
 
       _apiClient.setToken(authData.accessToken);
@@ -138,6 +167,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> refreshAfterProfileUpdate(User updatedUser) async {
     if (updatedUser.name != null) {
       await _storage.saveName(updatedUser.name!);
+    }
+    if (updatedUser.email != null) {
+      await _storage.saveEmail(updatedUser.email!);
     }
     state = state.copyWith(user: updatedUser);
   }

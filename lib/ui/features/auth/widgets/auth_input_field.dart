@@ -10,6 +10,10 @@ class AuthInputField extends StatelessWidget {
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final int? maxLength;
+  final Color? fillColor;
+  final Color? borderColor;
+  final TextAlign textAlign;
+  final TextStyle? style;
 
   const AuthInputField({
     super.key,
@@ -22,14 +26,19 @@ class AuthInputField extends StatelessWidget {
     this.validator,
     this.onChanged,
     this.maxLength,
+    this.fillColor,
+    this.borderColor,
+    this.textAlign = TextAlign.start,
+    this.style,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F7F7),
+        color: fillColor ?? const Color(0xFFF7F7F7),
         borderRadius: BorderRadius.circular(16),
+        border: borderColor != null ? Border.all(color: borderColor!) : null,
       ),
       child: TextField(
         controller: controller,
