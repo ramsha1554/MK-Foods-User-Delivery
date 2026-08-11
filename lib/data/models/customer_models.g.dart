@@ -243,13 +243,15 @@ Map<String, dynamic> _$$PlaceOrderRequestImplToJson(
   'items': instance.items,
   'deliveryAddress': instance.deliveryAddress,
   'paymentMethod': instance.paymentMethod,
-  'stripePaymentIntentId': instance.stripePaymentIntentId,
-  'specialInstructions': instance.specialInstructions,
+  if (instance.stripePaymentIntentId case final value?)
+    'stripePaymentIntentId': value,
+  if (instance.specialInstructions case final value?)
+    'specialInstructions': value,
 };
 
 _$OrderItemImpl _$$OrderItemImplFromJson(Map<String, dynamic> json) =>
     _$OrderItemImpl(
-      menuItemId: json['menuItem'] as String?,
+      menuItemId: json['menuItem'],
       name: json['name'] as String?,
       price: (json['price'] as num?)?.toDouble(),
       quantity: (json['quantity'] as num?)?.toInt(),
@@ -286,7 +288,7 @@ Map<String, dynamic> _$$OrderStatusHistoryImplToJson(
 _$OrderImpl _$$OrderImplFromJson(Map<String, dynamic> json) => _$OrderImpl(
   id: json['_id'] as String,
   orderNumber: json['orderNumber'] as String,
-  customer: json['customer'] as String?,
+  customer: json['customer'],
   restaurant: json['restaurant'],
   items: (json['items'] as List<dynamic>)
       .map((e) => OrderItem.fromJson(e as Map<String, dynamic>))

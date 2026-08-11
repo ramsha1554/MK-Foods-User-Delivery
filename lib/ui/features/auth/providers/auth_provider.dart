@@ -10,6 +10,9 @@ import '../../../../data/models/auth_models.dart';
 import '../../../../data/repositories/customer_repository.dart';
 import '../../../../data/services/auth_storage_service.dart';
 import '../../address/providers/address_provider.dart';
+import '../../cart/providers/cart_provider.dart';
+import '../../orders/providers/orders_provider.dart';
+import '../../profile/providers/profile_provider.dart';
 import '../../restaurant/providers/restaurant_provider.dart';
 
 enum AuthStatus { uninitialized, authenticated, unauthenticated, loading, error }
@@ -70,7 +73,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           isVerified: true,
         ),
       );
-  .
       unawaited(_refreshProfileFromServer());
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
@@ -136,6 +138,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       _ref.invalidate(addressProvider);
       _ref.invalidate(restaurantProvider);
+      _ref.invalidate(profileProvider);
+      _ref.invalidate(ordersProvider);
+      _ref.invalidate(cartProvider);
 
       return authData.user.isNewUser ?? false;
     } on Exception catch (e) {
@@ -164,6 +169,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = const AuthState(status: AuthStatus.unauthenticated);
     _ref.invalidate(addressProvider);
     _ref.invalidate(restaurantProvider);
+    _ref.invalidate(profileProvider);
+    _ref.invalidate(ordersProvider);
+    _ref.invalidate(cartProvider);
   }
 
   Future<void> refreshAfterProfileUpdate(User updatedUser) async {

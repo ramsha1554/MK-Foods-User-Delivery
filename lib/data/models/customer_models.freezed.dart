@@ -2682,9 +2682,9 @@ mixin _$PlaceOrderRequest {
       throw _privateConstructorUsedError;
   @JsonKey(name: 'paymentMethod')
   String get paymentMethod => throw _privateConstructorUsedError;
-  @JsonKey(name: 'stripePaymentIntentId')
+  @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
   String? get stripePaymentIntentId => throw _privateConstructorUsedError;
-  @JsonKey(name: 'specialInstructions')
+  @JsonKey(name: 'specialInstructions', includeIfNull: false)
   String? get specialInstructions => throw _privateConstructorUsedError;
 
   /// Serializes this PlaceOrderRequest to a JSON map.
@@ -2709,8 +2709,10 @@ abstract class $PlaceOrderRequestCopyWith<$Res> {
     List<OrderItemInput> items,
     @JsonKey(name: 'deliveryAddress') DeliveryAddressDetail deliveryAddress,
     @JsonKey(name: 'paymentMethod') String paymentMethod,
-    @JsonKey(name: 'stripePaymentIntentId') String? stripePaymentIntentId,
-    @JsonKey(name: 'specialInstructions') String? specialInstructions,
+    @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
+    String? stripePaymentIntentId,
+    @JsonKey(name: 'specialInstructions', includeIfNull: false)
+    String? specialInstructions,
   });
 
   $DeliveryAddressDetailCopyWith<$Res> get deliveryAddress;
@@ -2796,8 +2798,10 @@ abstract class _$$PlaceOrderRequestImplCopyWith<$Res>
     List<OrderItemInput> items,
     @JsonKey(name: 'deliveryAddress') DeliveryAddressDetail deliveryAddress,
     @JsonKey(name: 'paymentMethod') String paymentMethod,
-    @JsonKey(name: 'stripePaymentIntentId') String? stripePaymentIntentId,
-    @JsonKey(name: 'specialInstructions') String? specialInstructions,
+    @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
+    String? stripePaymentIntentId,
+    @JsonKey(name: 'specialInstructions', includeIfNull: false)
+    String? specialInstructions,
   });
 
   @override
@@ -2864,8 +2868,10 @@ class _$PlaceOrderRequestImpl implements _PlaceOrderRequest {
     required final List<OrderItemInput> items,
     @JsonKey(name: 'deliveryAddress') required this.deliveryAddress,
     @JsonKey(name: 'paymentMethod') required this.paymentMethod,
-    @JsonKey(name: 'stripePaymentIntentId') this.stripePaymentIntentId,
-    @JsonKey(name: 'specialInstructions') this.specialInstructions,
+    @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
+    this.stripePaymentIntentId,
+    @JsonKey(name: 'specialInstructions', includeIfNull: false)
+    this.specialInstructions,
   }) : _items = items;
 
   factory _$PlaceOrderRequestImpl.fromJson(Map<String, dynamic> json) =>
@@ -2889,10 +2895,10 @@ class _$PlaceOrderRequestImpl implements _PlaceOrderRequest {
   @JsonKey(name: 'paymentMethod')
   final String paymentMethod;
   @override
-  @JsonKey(name: 'stripePaymentIntentId')
+  @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
   final String? stripePaymentIntentId;
   @override
-  @JsonKey(name: 'specialInstructions')
+  @JsonKey(name: 'specialInstructions', includeIfNull: false)
   final String? specialInstructions;
 
   @override
@@ -2954,8 +2960,10 @@ abstract class _PlaceOrderRequest implements PlaceOrderRequest {
     @JsonKey(name: 'deliveryAddress')
     required final DeliveryAddressDetail deliveryAddress,
     @JsonKey(name: 'paymentMethod') required final String paymentMethod,
-    @JsonKey(name: 'stripePaymentIntentId') final String? stripePaymentIntentId,
-    @JsonKey(name: 'specialInstructions') final String? specialInstructions,
+    @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
+    final String? stripePaymentIntentId,
+    @JsonKey(name: 'specialInstructions', includeIfNull: false)
+    final String? specialInstructions,
   }) = _$PlaceOrderRequestImpl;
 
   factory _PlaceOrderRequest.fromJson(Map<String, dynamic> json) =
@@ -2973,10 +2981,10 @@ abstract class _PlaceOrderRequest implements PlaceOrderRequest {
   @JsonKey(name: 'paymentMethod')
   String get paymentMethod;
   @override
-  @JsonKey(name: 'stripePaymentIntentId')
+  @JsonKey(name: 'stripePaymentIntentId', includeIfNull: false)
   String? get stripePaymentIntentId;
   @override
-  @JsonKey(name: 'specialInstructions')
+  @JsonKey(name: 'specialInstructions', includeIfNull: false)
   String? get specialInstructions;
 
   /// Create a copy of PlaceOrderRequest
@@ -2994,7 +3002,7 @@ OrderItem _$OrderItemFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$OrderItem {
   @JsonKey(name: 'menuItem')
-  String? get menuItemId => throw _privateConstructorUsedError;
+  dynamic get menuItemId => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
   double? get price => throw _privateConstructorUsedError;
   int? get quantity => throw _privateConstructorUsedError;
@@ -3017,7 +3025,7 @@ abstract class $OrderItemCopyWith<$Res> {
       _$OrderItemCopyWithImpl<$Res, OrderItem>;
   @useResult
   $Res call({
-    @JsonKey(name: 'menuItem') String? menuItemId,
+    @JsonKey(name: 'menuItem') dynamic menuItemId,
     String? name,
     double? price,
     int? quantity,
@@ -3051,7 +3059,7 @@ class _$OrderItemCopyWithImpl<$Res, $Val extends OrderItem>
             menuItemId: freezed == menuItemId
                 ? _value.menuItemId
                 : menuItemId // ignore: cast_nullable_to_non_nullable
-                      as String?,
+                      as dynamic,
             name: freezed == name
                 ? _value.name
                 : name // ignore: cast_nullable_to_non_nullable
@@ -3084,7 +3092,7 @@ abstract class _$$OrderItemImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    @JsonKey(name: 'menuItem') String? menuItemId,
+    @JsonKey(name: 'menuItem') dynamic menuItemId,
     String? name,
     double? price,
     int? quantity,
@@ -3117,7 +3125,7 @@ class __$$OrderItemImplCopyWithImpl<$Res>
         menuItemId: freezed == menuItemId
             ? _value.menuItemId
             : menuItemId // ignore: cast_nullable_to_non_nullable
-                  as String?,
+                  as dynamic,
         name: freezed == name
             ? _value.name
             : name // ignore: cast_nullable_to_non_nullable
@@ -3155,7 +3163,7 @@ class _$OrderItemImpl implements _OrderItem {
 
   @override
   @JsonKey(name: 'menuItem')
-  final String? menuItemId;
+  final dynamic menuItemId;
   @override
   final String? name;
   @override
@@ -3176,8 +3184,10 @@ class _$OrderItemImpl implements _OrderItem {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$OrderItemImpl &&
-            (identical(other.menuItemId, menuItemId) ||
-                other.menuItemId == menuItemId) &&
+            const DeepCollectionEquality().equals(
+              other.menuItemId,
+              menuItemId,
+            ) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.price, price) || other.price == price) &&
             (identical(other.quantity, quantity) ||
@@ -3188,8 +3198,14 @@ class _$OrderItemImpl implements _OrderItem {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, menuItemId, name, price, quantity, itemTotal);
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(menuItemId),
+    name,
+    price,
+    quantity,
+    itemTotal,
+  );
 
   /// Create a copy of OrderItem
   /// with the given fields replaced by the non-null parameter values.
@@ -3207,7 +3223,7 @@ class _$OrderItemImpl implements _OrderItem {
 
 abstract class _OrderItem implements OrderItem {
   const factory _OrderItem({
-    @JsonKey(name: 'menuItem') final String? menuItemId,
+    @JsonKey(name: 'menuItem') final dynamic menuItemId,
     final String? name,
     final double? price,
     final int? quantity,
@@ -3219,7 +3235,7 @@ abstract class _OrderItem implements OrderItem {
 
   @override
   @JsonKey(name: 'menuItem')
-  String? get menuItemId;
+  dynamic get menuItemId;
   @override
   String? get name;
   @override
@@ -3447,7 +3463,7 @@ mixin _$Order {
   String get id => throw _privateConstructorUsedError;
   @JsonKey(name: 'orderNumber')
   String get orderNumber => throw _privateConstructorUsedError;
-  String? get customer => throw _privateConstructorUsedError;
+  dynamic get customer => throw _privateConstructorUsedError;
   dynamic get restaurant => throw _privateConstructorUsedError;
   List<OrderItem> get items => throw _privateConstructorUsedError;
   double? get subtotal => throw _privateConstructorUsedError;
@@ -3491,7 +3507,7 @@ abstract class $OrderCopyWith<$Res> {
   $Res call({
     @JsonKey(name: '_id') String id,
     @JsonKey(name: 'orderNumber') String orderNumber,
-    String? customer,
+    dynamic customer,
     dynamic restaurant,
     List<OrderItem> items,
     double? subtotal,
@@ -3557,7 +3573,7 @@ class _$OrderCopyWithImpl<$Res, $Val extends Order>
             customer: freezed == customer
                 ? _value.customer
                 : customer // ignore: cast_nullable_to_non_nullable
-                      as String?,
+                      as dynamic,
             restaurant: freezed == restaurant
                 ? _value.restaurant
                 : restaurant // ignore: cast_nullable_to_non_nullable
@@ -3645,7 +3661,7 @@ abstract class _$$OrderImplCopyWith<$Res> implements $OrderCopyWith<$Res> {
   $Res call({
     @JsonKey(name: '_id') String id,
     @JsonKey(name: 'orderNumber') String orderNumber,
-    String? customer,
+    dynamic customer,
     dynamic restaurant,
     List<OrderItem> items,
     double? subtotal,
@@ -3711,7 +3727,7 @@ class __$$OrderImplCopyWithImpl<$Res>
         customer: freezed == customer
             ? _value.customer
             : customer // ignore: cast_nullable_to_non_nullable
-                  as String?,
+                  as dynamic,
         restaurant: freezed == restaurant
             ? _value.restaurant
             : restaurant // ignore: cast_nullable_to_non_nullable
@@ -3808,7 +3824,7 @@ class _$OrderImpl implements _Order {
   @JsonKey(name: 'orderNumber')
   final String orderNumber;
   @override
-  final String? customer;
+  final dynamic customer;
   @override
   final dynamic restaurant;
   final List<OrderItem> _items;
@@ -3874,8 +3890,7 @@ class _$OrderImpl implements _Order {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.orderNumber, orderNumber) ||
                 other.orderNumber == orderNumber) &&
-            (identical(other.customer, customer) ||
-                other.customer == customer) &&
+            const DeepCollectionEquality().equals(other.customer, customer) &&
             const DeepCollectionEquality().equals(
               other.restaurant,
               restaurant,
@@ -3913,7 +3928,7 @@ class _$OrderImpl implements _Order {
     runtimeType,
     id,
     orderNumber,
-    customer,
+    const DeepCollectionEquality().hash(customer),
     const DeepCollectionEquality().hash(restaurant),
     const DeepCollectionEquality().hash(_items),
     subtotal,
@@ -3948,7 +3963,7 @@ abstract class _Order implements Order {
   const factory _Order({
     @JsonKey(name: '_id') required final String id,
     @JsonKey(name: 'orderNumber') required final String orderNumber,
-    final String? customer,
+    final dynamic customer,
     final dynamic restaurant,
     required final List<OrderItem> items,
     final double? subtotal,
@@ -3976,7 +3991,7 @@ abstract class _Order implements Order {
   @JsonKey(name: 'orderNumber')
   String get orderNumber;
   @override
-  String? get customer;
+  dynamic get customer;
   @override
   dynamic get restaurant;
   @override

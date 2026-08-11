@@ -171,7 +171,7 @@ class PlaceOrderRequest with _$PlaceOrderRequest {
 @freezed
 class OrderItem with _$OrderItem {
   const factory OrderItem({
-    @JsonKey(name: 'menuItem') String? menuItemId,
+    @JsonKey(name: 'menuItem') dynamic menuItemId,
     String? name,
     double? price,
     int? quantity,
@@ -199,7 +199,7 @@ class Order with _$Order {
   const factory Order({
     @JsonKey(name: '_id') required String id,
     @JsonKey(name: 'orderNumber') required String orderNumber,
-    String? customer,
+    dynamic customer,
     dynamic restaurant,
     required List<OrderItem> items,
     double? subtotal,

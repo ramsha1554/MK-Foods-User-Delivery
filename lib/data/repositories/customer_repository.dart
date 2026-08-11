@@ -169,6 +169,12 @@ class CustomerRepository {
     );
   }
 
+  Future<Order> getOrderDetails(String id) async {
+    AppLog.i('[ORDER]', 'getOrderDetails', 'Fetching order details', {'orderId': id});
+    final response = await _apiClient.get(ApiEndpoints.orderDetails(id));
+    return Order.fromJson(response.data as Map<String, dynamic>);
+  }
+
   Future<Order> cancelOrder(String id, {String? reason}) async {
     AppLog.i('[ORDER]', 'cancelOrder', 'Cancelling order', {'orderId': id, 'reason': reason});
     final response = await _apiClient.post(

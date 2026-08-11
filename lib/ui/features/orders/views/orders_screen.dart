@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../providers/orders_provider.dart';
+import 'order_details_screen.dart';
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -101,10 +102,20 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
                     itemCount: state.orders.length,
                     itemBuilder: (context, index) {
                       final order = state.orders[index];
-                      return _OrderCard(
-                        order: order,
-                        isCancelling: state.cancellingOrderId == order.id,
-                        onCancel: () => _confirmCancel(context, ref, order),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => OrderDetailsScreen(orderId: order.id),
+                            ),
+                          );
+                        },
+                        child: _OrderCard(
+                          order: order,
+                          isCancelling: state.cancellingOrderId == order.id,
+                          onCancel: () => _confirmCancel(context, ref, order),
+                        ),
                       );
                     },
                   ),
