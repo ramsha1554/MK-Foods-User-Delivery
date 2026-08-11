@@ -1,6 +1,5 @@
 
 
-
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +9,8 @@ import '../../../../data/api/api_client.dart';
 import '../../../../data/models/auth_models.dart';
 import '../../../../data/repositories/customer_repository.dart';
 import '../../../../data/services/auth_storage_service.dart';
+import '../../address/providers/address_provider.dart';
+import '../../restaurant/providers/restaurant_provider.dart';
 
 enum AuthStatus { uninitialized, authenticated, unauthenticated, loading, error }
 
@@ -45,16 +46,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
   final CustomerRepository _repository;
   final AuthStorageService _storage;
   final ApiClient _apiClient;
+  final Ref _ref;
 
-  AuthNotifier(this._repository, this._storage, this._apiClient)
+  AuthNotifier(this._repository, this._storage, this._apiClient, this._ref)
       : super(const AuthState()) {
-    // The interceptor calls this when a request 401s and the refresh token
-    // is also missing/expired, so the app falls back to the login flow the
-    // same way an explicit logout does.
+
     _apiClient.onSessionExpired = _clearSession;
     _init();
   }
- 
 
   Future<void> _init() async {
     if (_storage.isLoggedIn) {
@@ -71,9 +70,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           isVerified: true,
         ),
       );
-      // Local cache can be stale (e.g. name/email changed on the backend
-      // since the last login). Refresh from the server in the background
-      // so the UI shows current data instead of whatever was cached.
+  .
       unawaited(_refreshProfileFromServer());
     } else {
       state = state.copyWith(status: AuthStatus.unauthenticated);
@@ -93,8 +90,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = state.copyWith(user: freshUser);
     } catch (_) {
-      // Offline or the call failed — keep showing the cached data rather
-      // than blocking startup or surfacing an error for a background sync.
+ 
     }
   }
 
@@ -138,6 +134,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         user: authData.user,
       );
 
+      _ref.invalidate(addressProvider);
+      _ref.invalidate(restaurantProvider);
+
       return authData.user.isNewUser ?? false;
     } on Exception catch (e) {
       state = state.copyWith(
@@ -163,7 +162,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await _storage.clear();
     _apiClient.setToken(null);
     state = const AuthState(status: AuthStatus.unauthenticated);
+    _ref.invalidate(addressProvider);
+    _ref.invalidate(restaurantProvider);
   }
+
   Future<void> refreshAfterProfileUpdate(User updatedUser) async {
     if (updatedUser.name != null) {
       await _storage.saveName(updatedUser.name!);
@@ -184,5 +186,6 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
     locator<CustomerRepository>(),
     locator<AuthStorageService>(),
     locator<ApiClient>(),
+    ref,
   );
 });

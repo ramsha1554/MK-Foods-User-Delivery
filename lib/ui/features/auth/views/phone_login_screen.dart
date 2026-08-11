@@ -24,10 +24,12 @@ class PhoneLoginScreen extends ConsumerStatefulWidget {
 
 class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   final _phoneController = TextEditingController();
+  final _phoneFocusNode = FocusNode();
 
   @override
   void dispose() {
     _phoneController.dispose();
+    _phoneFocusNode.dispose();
     super.dispose();
   }
 
@@ -40,8 +42,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
       return;
     }
 
-    // Sanitize to digits only, drop a leading UK trunk "0", then prefix +44.
-    // Adjust here if the backend expects a different phone format.
+   
     final digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
     final national = digits.startsWith('0') ? digits.substring(1) : digits;
     final phone = '+44$national';
@@ -129,6 +130,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                               color: AppColors.textHint,
                             ),
                             controller: _phoneController,
+                            focusNode: _phoneFocusNode,
                             keyboardType: TextInputType.phone,
                           ),
                         ),
@@ -187,7 +189,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                     ),
                     const SizedBox(height: 32),
                     GestureDetector(
-                      onTap: () => _showComingSoon('Account creation'),
+                      onTap: () => _phoneFocusNode.requestFocus(),
                       child: RichText(
                         text: TextSpan(
                           style: const TextStyle(

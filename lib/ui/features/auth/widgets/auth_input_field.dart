@@ -14,6 +14,7 @@ class AuthInputField extends StatelessWidget {
   final Color? borderColor;
   final TextAlign textAlign;
   final TextStyle? style;
+  final FocusNode? focusNode;
 
   const AuthInputField({
     super.key,
@@ -30,6 +31,7 @@ class AuthInputField extends StatelessWidget {
     this.borderColor,
     this.textAlign = TextAlign.start,
     this.style,
+    this.focusNode,
   });
 
   @override
@@ -43,6 +45,7 @@ class AuthInputField extends StatelessWidget {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        focusNode: focusNode,
         keyboardType: keyboardType,
         maxLength: maxLength,
         onChanged: onChanged,
