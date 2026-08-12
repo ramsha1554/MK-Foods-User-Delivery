@@ -10,6 +10,8 @@ import '../../cart/providers/cart_provider.dart';
 import '../../cart/widgets/cart_bottom_sheet.dart';
 import '../providers/restaurant_provider.dart';
 import '../../../../core/utils/media_url.dart';
+import '../widgets/restaurant_info_bar.dart';
+import '../widgets/menu_category_nav.dart';
 
 class RestaurantDetailScreen extends ConsumerWidget {
   final String restaurantId;
@@ -53,91 +55,116 @@ class RestaurantDetailScreen extends ConsumerWidget {
   }
 }
 
-class _RestaurantDetailBody extends StatelessWidget {
+class _RestaurantDetailBody extends StatefulWidget {
   final RestaurantDetail detail;
 
   const _RestaurantDetailBody({required this.detail});
 
   @override
+  State<_RestaurantDetailBody> createState() => _RestaurantDetailBodyState();
+}
+
+class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
+  // UI-only for now — no favourites endpoint exists on the backend yet.
+  // Wire this to a real API call once CustomerRepository exposes one.
+
+
+  int _selectedCategoryIndex = 0;
+
+  void _selectCategory(int index) {
+    setState(() => _selectedCategoryIndex = index);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final restaurant = detail.restaurant;
+    final restaurant = widget.detail.restaurant;
     final isOpen = restaurant.isOpen ?? false;
     final imageUrl = resolveMediaUrl(restaurant.coverImage ?? restaurant.logo);
+    final categoryNames = widget.detail.menu.map((c) => c.name).toList();
+    final heroHeight = MediaQuery.of(context).size.height * 0.42;
 
     return CustomScrollView(
       slivers: [
-        // ── Hero header ──
-        SliverAppBar(
-          pinned: true,
-          expandedHeight: 200,
-          backgroundColor: AppColors.surface,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
-          flexibleSpace: FlexibleSpaceBar(
-            titlePadding: const EdgeInsets.only(left: 56, right: 16, bottom: 14),
-            title: Text(
-              restaurant.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16),
-            ),
-            background: Stack(
-              fit: StackFit.expand,
-              children: [
-                (imageUrl != null && imageUrl.isNotEmpty)
+        // ── Hero image with overlapping info card ──
+        SliverToBoxAdapter(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SizedBox(
+                height: heroHeight,
+                width: double.infinity,
+                child: (imageUrl != null && imageUrl.isNotEmpty)
                     ? Image.network(
                         imageUrl,
                         fit: BoxFit.cover,
                         errorBuilder: (_, __, ___) => _HeroFallback(name: restaurant.name),
                       )
                     : _HeroFallback(name: restaurant.name),
-                // Scrim so the title stays legible over any photo.
-                const DecoratedBox(
-                  decoration: BoxDecoration(
+              ),
+              // Top scrim so the back/favorite buttons stay legible on any photo.
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 90,
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, AppColors.scrim],
-                      stops: [0.4, 1.0],
+                      colors: [AppColors.scrim, Colors.transparent],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                  child: _HeroIconButton(
+                    icon: LucideIcons.arrowLeft,
+                    onTap: () => Navigator.of(context).maybePop(),
+                  ),
+                ),
+              ),
+            
+              Positioned(
+                left: AppSpacing.lg,
+                right: AppSpacing.lg,
+                bottom: -36,
+                child: RestaurantInfoBar(
+                  rating: restaurant.averageRating ?? 0,
+                  deliveryTimeMinutes: restaurant.preparationTime,
+                  deliveryFee: restaurant.deliveryFee ?? 0,
+                  minimumOrder: restaurant.minimumOrder ?? 0,
+                ),
+              ),
+            ],
           ),
         ),
 
+        // Space reserved for the overlapping card above (36 tall + gap).
+        const SliverToBoxAdapter(child: SizedBox(height: 56)),
+
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.lg),
+            padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if ((restaurant.cuisineType ?? []).isNotEmpty) ...[
-                  Text(restaurant.cuisineType!.join(' · '), style: AppTextStyles.bodySecondary),
+                  Row(
+                    children: [
+                      const Icon(LucideIcons.leaf, size: 14, color: AppColors.textSecondary),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(restaurant.cuisineType!.join(' · '), style: AppTextStyles.bodySecondary),
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 6),
                 ],
-                if (restaurant.description != null) ...[
+                if (restaurant.description != null)
                   Text(restaurant.description!, style: AppTextStyles.body),
-                  const SizedBox(height: AppSpacing.md),
-                ],
-                Row(
-                  children: [
-                    const Icon(LucideIcons.star, size: 14, color: AppColors.rating),
-                    const SizedBox(width: 4),
-                    Text((restaurant.averageRating ?? 0).toStringAsFixed(1), style: AppTextStyles.caption),
-                    _MetaDivider(),
-                    const Icon(LucideIcons.clock, size: 14, color: AppColors.textSecondary),
-                    const SizedBox(width: 4),
-                    Text('${restaurant.preparationTime ?? '-'} min', style: AppTextStyles.caption),
-                    _MetaDivider(),
-                    const Icon(LucideIcons.bike, size: 14, color: AppColors.textSecondary),
-                    const SizedBox(width: 4),
-                    Text('£${(restaurant.deliveryFee ?? 0).toStringAsFixed(2)}', style: AppTextStyles.caption),
-                    _MetaDivider(),
-                    Text('Min £${(restaurant.minimumOrder ?? 0).toStringAsFixed(2)}', style: AppTextStyles.caption),
-                  ],
-                ),
                 if (!isOpen) ...[
                   const SizedBox(height: AppSpacing.md),
                   Container(
@@ -156,24 +183,69 @@ class _RestaurantDetailBody extends StatelessWidget {
             ),
           ),
         ),
+
+        if (categoryNames.isNotEmpty)
+          SliverToBoxAdapter(
+            child: MenuCategoryNav(
+              categories: categoryNames,
+              selectedIndex: _selectedCategoryIndex,
+              onSelected: _selectCategory,
+            ),
+          ),
+        const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
         const SliverToBoxAdapter(child: Divider(height: 1, color: AppColors.divider)),
 
-        for (final category in detail.menu) ...[
+        if (widget.detail.menu.isNotEmpty) ...[
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm),
-              child: Text(category.name, style: AppTextStyles.h2),
+              child: Text(widget.detail.menu[_selectedCategoryIndex].name, style: AppTextStyles.h2),
             ),
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _MenuItemTile(item: category.items[index], restaurant: restaurant),
-              childCount: category.items.length,
+              (context, index) => _MenuItemTile(
+                item: widget.detail.menu[_selectedCategoryIndex].items[index],
+                restaurant: restaurant,
+              ),
+              childCount: widget.detail.menu[_selectedCategoryIndex].items.length,
             ),
           ),
         ],
         const SliverToBoxAdapter(child: SizedBox(height: 90)),
       ],
+    );
+  }
+}
+
+class _HeroIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final VoidCallback onTap;
+
+  const _HeroIconButton({
+    required this.icon,
+    this.iconColor = AppColors.textPrimary,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      customBorder: const CircleBorder(),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.surface.withValues(alpha: 0.92),
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(color: AppColors.shadow.withValues(alpha: 0.3), blurRadius: 6),
+          ],
+        ),
+        child: Icon(icon, size: 18, color: iconColor),
+      ),
     );
   }
 }
@@ -191,16 +263,6 @@ class _HeroFallback extends StatelessWidget {
         name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase(),
         style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w800, color: AppColors.primary),
       ),
-    );
-  }
-}
-
-class _MetaDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Text('·', style: TextStyle(color: AppColors.textHint, fontWeight: FontWeight.bold)),
     );
   }
 }
@@ -262,6 +324,23 @@ class _MenuItemTile extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              child: Container(
+                width: 96,
+                height: 96,
+                color: AppColors.primaryLight,
+                child: resolveMediaUrl(item.image) != null
+                    ? Image.network(
+                        resolveMediaUrl(item.image)!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) =>
+                            const Icon(LucideIcons.utensils, color: AppColors.primary, size: 26),
+                      )
+                    : const Icon(LucideIcons.utensils, color: AppColors.primary, size: 26),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,43 +356,27 @@ class _MenuItemTile extends ConsumerWidget {
                     ),
                   ],
                   const SizedBox(height: AppSpacing.sm),
-                  Text('£${item.price.toStringAsFixed(2)}', style: AppTextStyles.priceAccent),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('£${item.price.toStringAsFixed(2)}', style: AppTextStyles.priceAccent),
+                      if (!item.isAvailable)
+                        const Text('Sold out',
+                            style: TextStyle(fontSize: 10, color: AppColors.error, fontWeight: FontWeight.w700))
+                      else if (inCart == null)
+                        _AddButton(onTap: () => _handleAdd(context, ref))
+                      else
+                        _QuantityStepper(
+                          quantity: inCart.quantity,
+                          onDecrement: () =>
+                              ref.read(cartProvider.notifier).updateQuantity(item.id, inCart.quantity - 1),
+                          onIncrement: () =>
+                              ref.read(cartProvider.notifier).updateQuantity(item.id, inCart.quantity + 1),
+                        ),
+                    ],
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(width: AppSpacing.md),
-            Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: Container(
-                    width: 72,
-                    height: 72,
-                    color: AppColors.primaryLight,
-                    child: resolveMediaUrl(item.image) != null
-                        ? Image.network(
-                            resolveMediaUrl(item.image)!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) =>
-                                const Icon(LucideIcons.utensils, color: AppColors.primary, size: 22),
-                          )
-                        : const Icon(LucideIcons.utensils, color: AppColors.primary, size: 22),
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.sm),
-                if (!item.isAvailable)
-                  const Text('Sold out', style: TextStyle(fontSize: 10, color: AppColors.error, fontWeight: FontWeight.w700))
-                else if (inCart == null)
-                  _AddButton(onTap: () => _handleAdd(context, ref))
-                else
-                  _QuantityStepper(
-                    quantity: inCart.quantity,
-                    onDecrement: () =>
-                        ref.read(cartProvider.notifier).updateQuantity(item.id, inCart.quantity - 1),
-                    onIncrement: () =>
-                        ref.read(cartProvider.notifier).updateQuantity(item.id, inCart.quantity + 1),
-                  ),
-              ],
             ),
           ],
         ),

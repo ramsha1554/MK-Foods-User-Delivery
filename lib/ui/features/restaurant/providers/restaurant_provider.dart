@@ -38,6 +38,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantState> {
     required double latitude,
     required double longitude,
     String? cuisine,
+    double? radius,
   }) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
@@ -45,6 +46,7 @@ class RestaurantNotifier extends StateNotifier<RestaurantState> {
         latitude: latitude,
         longitude: longitude,
         cuisine: cuisine,
+        radius: radius,
       );
       final list = (response.data as List<dynamic>)
           .map((e) => Restaurant.fromJson(e as Map<String, dynamic>))

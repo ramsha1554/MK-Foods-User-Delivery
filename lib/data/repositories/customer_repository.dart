@@ -41,6 +41,7 @@ class CustomerRepository {
     }
   }
 
+  
   Future<User> getProfile() async {
     AppLog.i('[AUTH]', 'getProfile', 'Fetching profile');
     final response = await _apiClient.get(ApiEndpoints.userMe);
@@ -55,6 +56,12 @@ class CustomerRepository {
     );
     return User.fromJson(response.data as Map<String, dynamic>);
   }
+
+
+  Future<void> logout() async {
+  AppLog.i('[AUTH]', 'logout', 'Logging out');
+  await _apiClient.post(ApiEndpoints.logout);
+}
 
   // ────────────────────────────────────────────
   //  Addresses

@@ -159,7 +159,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
+
   Future<void> logout() async {
+    try {
+      await _repository.logout();        
+    } catch (_) {
+     
+    }
     await _clearSession();
   }
 

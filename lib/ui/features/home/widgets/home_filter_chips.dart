@@ -4,19 +4,17 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 
-/// "Filters" and "Offers" are UI-only placeholders — no filtering-by-offer
-/// or generic-filter backend exists. "Near & Fast" is real: it triggers a
-/// client-side sort by preparationTime, no backend change needed.
+/// "Offers" stays a UI-only placeholder — no offers/promo model exists on
+/// the backend yet. "Filters" is now real: it opens the Sort & Filter
+/// sheet and shows a badge for how many filters are currently active.
 class HomeFilterChips extends StatelessWidget {
-  final bool nearFastActive;
-  final ValueChanged<bool> onNearFastToggle;
+  final int activeFilterCount;
   final VoidCallback onFiltersTap;
   final VoidCallback onOffersTap;
 
   const HomeFilterChips({
     super.key,
-    required this.nearFastActive,
-    required this.onNearFastToggle,
+    required this.activeFilterCount,
     required this.onFiltersTap,
     required this.onOffersTap,
   });
@@ -27,13 +25,11 @@ class HomeFilterChips extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
         children: [
-          _Chip(icon: LucideIcons.slidersHorizontal, label: 'Filters', onTap: onFiltersTap),
-          const SizedBox(width: AppSpacing.sm),
           _Chip(
-            icon: LucideIcons.zap,
-            label: 'Near & Fast',
-            active: nearFastActive,
-            onTap: () => onNearFastToggle(!nearFastActive),
+            icon: LucideIcons.slidersHorizontal,
+            label: activeFilterCount > 0 ? 'Filters ($activeFilterCount)' : 'Sort & Filter',
+            active: activeFilterCount > 0,
+            onTap: onFiltersTap,
           ),
           const SizedBox(width: AppSpacing.sm),
           _Chip(icon: LucideIcons.tag, label: 'Offers', onTap: onOffersTap),
