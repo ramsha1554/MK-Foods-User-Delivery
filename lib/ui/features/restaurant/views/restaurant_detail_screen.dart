@@ -6,6 +6,7 @@ import '../../../../data/models/customer_models.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_dialogs.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../cart/widgets/cart_bottom_sheet.dart';
 import '../providers/restaurant_provider.dart';
@@ -277,19 +278,12 @@ class _MenuItemTile extends ConsumerWidget {
     final notifier = ref.read(cartProvider.notifier);
 
     if (notifier.hasConflict(restaurant.id)) {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Start a new cart?'),
-          content: Text(
-            'Your cart has items from ${ref.read(cartProvider).restaurantName ?? 'another restaurant'}. '
+      final confirmed = await showAppConfirmDialog(
+        context,
+        title: 'Start a new cart?',
+        message: 'Your cart has items from ${ref.read(cartProvider).restaurantName ?? 'another restaurant'}. '
             'Adding this item will clear your current cart.',
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-            TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Clear & Add')),
-          ],
-        ),
+        confirmLabel: 'Clear & Add',
       );
       if (confirmed != true) return;
       notifier.clearCart();
