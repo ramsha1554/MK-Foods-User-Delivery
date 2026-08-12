@@ -6,6 +6,7 @@ import '../../../../data/models/customer_models.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../providers/address_provider.dart';
 
 class AddAddressScreen extends ConsumerStatefulWidget {
@@ -104,8 +105,10 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
     }
 
     if (success && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_isEditMode ? 'Address updated!' : 'Address saved successfully!')),
+      AppSnackbar.show(
+        context,
+        _isEditMode ? 'Address updated!' : 'Address saved successfully!',
+        type: AppSnackbarType.success,
       );
       Navigator.pop(context);
     }

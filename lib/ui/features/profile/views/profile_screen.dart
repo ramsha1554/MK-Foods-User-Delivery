@@ -10,6 +10,8 @@ import '../../../../data/repositories/customer_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_dialogs.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../../address/views/address_list_screen.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../orders/views/orders_screen.dart';
@@ -50,9 +52,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Future<void> _save() async {
     if (_nameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Name cannot be empty.'), backgroundColor: AppColors.error),
-      );
+      AppSnackbar.show(context, 'Name cannot be empty.', type: AppSnackbarType.error);
       return;
     }
 
@@ -68,17 +68,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ref.invalidate(profileProvider);
       if (mounted) {
         setState(() => _isEditing = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Profile updated.'), backgroundColor: AppColors.success),
-        );
+        AppSnackbar.show(context, 'Profile updated.', type: AppSnackbarType.success);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString().replaceAll('Exception: ', '')),
-            backgroundColor: AppColors.error,
-          ),
+        AppSnackbar.show(
+          context,
+          e.toString().replaceAll('Exception: ', ''),
+          type: AppSnackbarType.error,
         );
       }
     } finally {
@@ -87,19 +84,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Future<void> _confirmLogout() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Log out?'),
-        content: const Text('You\'ll need to verify your phone number again to sign back in.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Log Out', style: TextStyle(color: AppColors.error)),
-          ),
-        ],
-      ),
+    final confirmed = await showAppConfirmDialog(
+      context,
+      title: 'Log out?',
+      message: 'You\'ll need to verify your phone number again to sign back in.',
+      confirmLabel: 'Log Out',
+      isDestructive: true,
     );
 
     if (confirmed != true || !mounted) return;

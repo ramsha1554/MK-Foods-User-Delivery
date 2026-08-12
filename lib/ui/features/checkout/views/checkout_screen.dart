@@ -9,6 +9,9 @@ import '../../../../data/repositories/customer_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_bottom_sheet.dart';
+import '../../../core/widgets/app_dialogs.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../../address/providers/address_provider.dart';
 import '../../cart/providers/cart_provider.dart';
 
@@ -59,6 +62,9 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: AppSpacing.sm),
+            const AppSheetHandle(),
+            const SizedBox(height: AppSpacing.sm),
             Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
               child: Align(
@@ -124,27 +130,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
       ref.read(cartProvider.notifier).clearCart();
 
       if (!mounted) return;
-      await showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (ctx) => AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: const Text('Order Placed!'),
-          content: Text(
-            'Your order ${order.orderNumber} has been placed successfully. '
+      await showAppMessageDialog(
+        context,
+        title: 'Order Placed!',
+        message: 'Your order ${order.orderNumber} has been placed successfully. '
             'You\'ll be notified as it progresses.',
-            style: AppTextStyles.body,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
-              child: const Text('Done'),
-            ),
-          ],
-        ),
+        icon: LucideIcons.circleCheck,
+        barrierDismissible: false,
+        actionLabel: 'Done',
+        onAction: () => Navigator.popUntil(context, (route) => route.isFirst),
       );
     } catch (e) {
       _showError(e.toString().replaceAll('Exception: ', ''));
@@ -154,9 +148,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppColors.error),
-    );
+    AppSnackbar.show(context, message, type: AppSnackbarType.error);
   }
 
   @override

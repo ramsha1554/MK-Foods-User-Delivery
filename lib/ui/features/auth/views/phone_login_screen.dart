@@ -9,6 +9,7 @@ import '../../../../core/animations/app_page_transitions.dart';
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_3d_button.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_input_field.dart';
 import '../widgets/country_code_selector.dart';
@@ -36,9 +37,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   void _requestOtp() {
     final raw = _phoneController.text.trim();
     if (raw.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your phone number')),
-      );
+      AppSnackbar.show(context, 'Please enter your phone number', type: AppSnackbarType.error);
       return;
     }
 
@@ -51,9 +50,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   }
 
   void _showComingSoon(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature — coming soon')),
-    );
+    AppSnackbar.show(context, '$feature — coming soon', type: AppSnackbarType.info);
   }
 
   @override
@@ -62,9 +59,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
 
     ref.listen<AuthState>(authProvider, (prev, next) {
       if (next.status == AuthStatus.error && next.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!)),
-        );
+        AppSnackbar.show(context, next.errorMessage!, type: AppSnackbarType.error);
         ref.read(authProvider.notifier).clearError();
       }
       if (next.status == AuthStatus.unauthenticated && next.phone != null) {

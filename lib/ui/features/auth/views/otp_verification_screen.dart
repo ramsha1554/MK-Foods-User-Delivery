@@ -8,6 +8,7 @@ import '../../../../core/animations/app_page_transitions.dart';
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_3d_button.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../../home/views/home_screen.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_input_field.dart';
@@ -36,9 +37,7 @@ class _OtpVerificationScreenState
   void _verifyOtp() {
     final code = _codeController.text.trim();
     if (code.length != 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter the 6-digit code')),
-      );
+      AppSnackbar.show(context, 'Please enter the 6-digit code', type: AppSnackbarType.error);
       return;
     }
     ref.read(authProvider.notifier).verifyOtp(code).then((isNewUser) {
@@ -69,9 +68,7 @@ class _OtpVerificationScreenState
 
     ref.listen<AuthState>(authProvider, (prev, next) {
       if (next.status == AuthStatus.error && next.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!)),
-        );
+        AppSnackbar.show(context, next.errorMessage!, type: AppSnackbarType.error);
         ref.read(authProvider.notifier).clearError();
       }
     });

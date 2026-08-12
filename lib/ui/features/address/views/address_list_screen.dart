@@ -8,6 +8,9 @@ import '../../../../data/models/customer_models.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_bottom_sheet.dart';
+import '../../../core/widgets/app_dialogs.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../providers/address_provider.dart';
 import 'add_address_screen.dart';
 
@@ -112,33 +115,21 @@ class AddressListScreen extends ConsumerWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context, WidgetRef ref, Address address) async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete address?'),
-        content: Text('"${address.fullAddress}" will be permanently removed.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.error),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+    final confirmed = await showAppConfirmDialog(
+      context,
+      title: 'Delete address?',
+      message: '"${address.fullAddress}" will be permanently removed.',
+      confirmLabel: 'Delete',
+      isDestructive: true,
     );
 
     if (confirmed == true && context.mounted) {
       final success = await ref.read(addressProvider.notifier).deleteAddress(address.id);
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success ? 'Address deleted.' : 'Failed to delete address.'),
-            backgroundColor: success ? AppColors.success : AppColors.error,
-          ),
+        AppSnackbar.show(
+          context,
+          success ? 'Address deleted.' : 'Failed to delete address.',
+          type: success ? AppSnackbarType.success : AppSnackbarType.error,
         );
       }
     }
@@ -183,6 +174,8 @@ class _AddressCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: AppSpacing.sm),
+            const AppSheetHandle(),
             const SizedBox(height: AppSpacing.sm),
             ListTile(
               leading: const Icon(LucideIcons.pencil, color: AppColors.textPrimary),

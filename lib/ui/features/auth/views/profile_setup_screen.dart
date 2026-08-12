@@ -6,6 +6,7 @@ import '../../../../core/animations/app_fade_in.dart';
 import '../../../../core/animations/app_page_transitions.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/app_3d_button.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../../home/views/home_screen.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/auth_input_field.dart';
@@ -30,9 +31,7 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   void _saveProfile() {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your name')),
-      );
+      AppSnackbar.show(context, 'Please enter your name', type: AppSnackbarType.error);
       return;
     }
     ref.read(authProvider.notifier).updateName(name);

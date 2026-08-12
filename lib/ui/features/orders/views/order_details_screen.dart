@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../data/models/customer_models.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_dialogs.dart';
+import '../../../core/widgets/app_snackbar.dart';
 import '../providers/order_details_provider.dart';
 import '../providers/orders_provider.dart';
 
@@ -30,7 +33,7 @@ class OrderDetailsScreen extends ConsumerWidget {
           error: (error, _) => ListView(
             padding: const EdgeInsets.all(AppSpacing.xl),
             children: [
-              const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+              const Icon(LucideIcons.circleAlert, color: AppColors.error, size: 48),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Failed to load order',
@@ -58,41 +61,29 @@ class _OrderDetailsView extends ConsumerWidget {
   const _OrderDetailsView({required this.order});
 
   Future<void> _confirmCancel(BuildContext context, WidgetRef ref) async {
-    final reasonController = TextEditingController();
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Cancel this order?'),
-        content: TextField(
-          controller: reasonController,
-          decoration: const InputDecoration(hintText: 'Reason (optional)'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Order')),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Cancel Order', style: TextStyle(color: AppColors.error)),
-          ),
-        ],
-      ),
+    final reason = await showAppInputDialog(
+      context,
+      title: 'Cancel this order?',
+      hintText: 'Reason (optional)',
+      confirmLabel: 'Cancel Order',
+      isDestructive: true,
+      cancelLabel: 'Keep Order',
     );
 
-    if (confirmed == true) {
-      final success = await ref.read(ordersProvider.notifier).cancelOrder(
-            order.id,
-            reason: reasonController.text.trim().isEmpty ? null : reasonController.text.trim(),
-          );
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success ? 'Order cancelled.' : 'Failed to cancel order.'),
-            backgroundColor: success ? AppColors.success : AppColors.error,
-          ),
+    if (reason == null) return;
+    final success = await ref.read(ordersProvider.notifier).cancelOrder(
+          order.id,
+          reason: reason.isEmpty ? null : reason,
         );
-      }
-      if (success) {
-        ref.invalidate(orderDetailsProvider(order.id));
-      }
+    if (context.mounted) {
+      AppSnackbar.show(
+        context,
+        success ? 'Order cancelled.' : 'Failed to cancel order.',
+        type: success ? AppSnackbarType.success : AppSnackbarType.error,
+      );
+    }
+    if (success) {
+      ref.invalidate(orderDetailsProvider(order.id));
     }
   }
 
