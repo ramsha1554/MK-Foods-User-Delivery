@@ -191,8 +191,9 @@ class _OrderDetailsView extends ConsumerWidget {
         Text('Delivery To', style: AppTextStyles.h2),
         const SizedBox(height: AppSpacing.sm),
         if (order.deliveryAddress != null) ...[
-          Text(order.deliveryAddress!.label ?? 'Address', style: AppTextStyles.body.copyWith(fontWeight: FontWeight.bold)),
-          Text(order.deliveryAddress!.fullAddress ?? '', style: AppTextStyles.bodySecondary),
+          Text(order.deliveryAddress!.label, style: AppTextStyles.body.copyWith(fontWeight: FontWeight.bold)),
+          Text(order.deliveryAddress!.fullAddress, style: AppTextStyles.bodySecondary),
+
         ],
 
         if (order.specialInstructions != null && order.specialInstructions!.isNotEmpty) ...[

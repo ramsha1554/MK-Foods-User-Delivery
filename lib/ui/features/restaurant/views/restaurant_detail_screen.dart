@@ -152,18 +152,7 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if ((restaurant.cuisineType ?? []).isNotEmpty) ...[
-                  Row(
-                    children: [
-                      const Icon(LucideIcons.leaf, size: 14, color: AppColors.textSecondary),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(restaurant.cuisineType!.join(' · '), style: AppTextStyles.bodySecondary),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                ],
+                
                 if (restaurant.description != null)
                   Text(restaurant.description!, style: AppTextStyles.body),
                 if (!isOpen) ...[
@@ -221,12 +210,10 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
 
 class _HeroIconButton extends StatelessWidget {
   final IconData icon;
-  final Color iconColor;
   final VoidCallback onTap;
 
   const _HeroIconButton({
     required this.icon,
-    this.iconColor = AppColors.textPrimary,
     required this.onTap,
   });
 
@@ -245,7 +232,7 @@ class _HeroIconButton extends StatelessWidget {
             BoxShadow(color: AppColors.shadow.withValues(alpha: 0.3), blurRadius: 6),
           ],
         ),
-        child: Icon(icon, size: 18, color: iconColor),
+        child: Icon(icon, size: 18, color: AppColors.textPrimary),
       ),
     );
   }

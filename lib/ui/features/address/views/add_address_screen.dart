@@ -307,7 +307,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                     ),
                     value: _isDefault,
                     onChanged: _isFirstAddress ? null : (val) => setState(() => _isDefault = val),
-                    activeColor: AppColors.primary,
+                    activeThumbColor: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xxl),
