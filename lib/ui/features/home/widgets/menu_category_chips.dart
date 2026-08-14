@@ -28,7 +28,7 @@ class MenuCategoryChips extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           itemCount: 5,
-          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+          separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
           itemBuilder: (_, __) => const _ChipSkeleton(),
         ),
       );
@@ -42,7 +42,7 @@ class MenuCategoryChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
         itemCount: categories.length + 1,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
+        separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.sm),
         itemBuilder: (context, index) {
           if (index == 0) {
             return _ChipItem(

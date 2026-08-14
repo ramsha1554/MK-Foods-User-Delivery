@@ -25,7 +25,7 @@ class HomeSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppSpacing.xxl),
-        border: Border.all(color: AppColors.cardBorder),
+        border: Border.all(color: AppColors.surface),
       ),
       child: Row(
         children: [
