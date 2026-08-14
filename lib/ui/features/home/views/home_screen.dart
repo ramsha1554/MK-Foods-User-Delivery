@@ -22,7 +22,6 @@ import '../providers/filter_provider.dart';
 import '../providers/dish_category_provider.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/home_search_bar.dart';
-import '../widgets/home_promo_banner.dart';
 import '../widgets/dish_category_chips.dart';
 import '../widgets/home_filter_chips.dart';
 import '../widgets/home_bottom_nav.dart';
@@ -142,10 +141,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           duration: AppDurations.hero,
           child: Column(
             children: [
+              // ── Greeting ──
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm,
+                ),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    authState.user?.name != null
+                        ? 'Hey ${_firstName(authState.user!.name)},'
+                        : 'Hey there,',
+                    style: AppTextStyles.h1,
+                  ),
+                ),
+              ),
+
               // ── Location header ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.lg, AppSpacing.md, AppSpacing.lg, AppSpacing.md,
+                  AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md,
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
@@ -170,46 +185,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              defaultAddress != null
-                                  ? 'DELIVERING TO · ${defaultAddress.label.toUpperCase()}'
-                                  : 'SET DELIVERY ADDRESS',
-                              style: AppTextStyles.eyebrow,
+                              defaultAddress?.label ?? 'Set delivery address',
+                              style: AppTextStyles.sectionLabel,
                             ),
                             const SizedBox(height: 2),
                             Text(
                               defaultAddress?.fullAddress ?? 'Add an address to get started',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
+                              style: AppTextStyles.eyebrow,
                             ),
                           ],
                         ),
                       ),
                       const Icon(LucideIcons.chevronDown, color: AppColors.textSecondary, size: 18),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ── Greeting ──
-              Padding(
-                padding: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        authState.user?.name != null
-                            ? 'Hey ${_firstName(authState.user!.name)},'
-                            : 'Hey there,',
-                        style: AppTextStyles.h1,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        "Let's get you something delicious!",
-                        style: AppTextStyles.bodySecondary,
-                      ),
                     ],
                   ),
                 ),
@@ -328,11 +317,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: HomePromoBanner(),
-          ),
-          const SizedBox(height: AppSpacing.lg),
           DishCategoryChips(
             dishes: dishState.dishes,
             isLoading: dishState.isLoading,
@@ -348,13 +332,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           const SizedBox(height: AppSpacing.lg),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Top restaurants near you', style: AppTextStyles.h2),
-                Text('See all', style: AppTextStyles.bodySecondary.copyWith(color: AppColors.primary)),
-              ],
-            ),
+            child: Text('Top restaurants near you', style: AppTextStyles.h2),
           ),
           const SizedBox(height: AppSpacing.sm),
           if (isFirstLoad)
@@ -399,26 +377,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           else
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: restaurants.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: AppSpacing.md,
-                  crossAxisSpacing: AppSpacing.md,
-                  childAspectRatio: 0.72,
-                ),
-                itemBuilder: (context, index) {
-                  final restaurant = restaurants[index];
-                  return RestaurantCard(
-                    restaurant: restaurant,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => RestaurantDetailScreen(restaurantId: restaurant.id)),
+              child: Column(
+                children: [
+                  for (final restaurant in restaurants)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                      child: RestaurantCard(
+                        restaurant: restaurant,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => RestaurantDetailScreen(restaurantId: restaurant.id)),
+                        ),
+                      ),
                     ),
-                  );
-                },
+                ],
               ),
             ),
         ],
