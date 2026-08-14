@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../checkout/views/checkout_screen.dart';
 import '../providers/cart_provider.dart';
 
@@ -56,7 +57,7 @@ class CartBottomBar extends ConsumerWidget {
                         ),
                         child: Text(
                           '${cart.itemCount}',
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13),
+                          style: AppTextStyles.bodySecondary.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
                         ),
                       ),
                       const SizedBox(width: AppSpacing.sm),
@@ -65,12 +66,12 @@ class CartBottomBar extends ConsumerWidget {
                           cart.restaurantName ?? 'View Cart',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+                          style: AppTextStyles.body.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
                         ),
                       ),
                       Text(
                         '£${cart.subtotal.toStringAsFixed(2)}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
+                        style: AppTextStyles.priceAccent.copyWith(color: Colors.white),
                       ),
                       const SizedBox(width: 6),
                       const Icon(LucideIcons.chevronRight, color: Colors.white, size: 18),

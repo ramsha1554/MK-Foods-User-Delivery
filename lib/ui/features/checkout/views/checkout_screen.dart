@@ -280,7 +280,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               child: Text(
                 'Minimum order is £${(cart.minimumOrder ?? 0).toStringAsFixed(2)}. '
                 'Add £${((cart.minimumOrder ?? 0) - cart.subtotal).toStringAsFixed(2)} more to checkout.',
-                style: const TextStyle(color: AppColors.warning, fontSize: 12, fontWeight: FontWeight.w600),
+                style: AppTextStyles.caption.copyWith(color: AppColors.warning, fontWeight: FontWeight.w600),
               ),
             ),
           ],
@@ -308,7 +308,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                     )
                   : Text(
                       'Place Order • £${total.toStringAsFixed(2)}',
-                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                      style: AppTextStyles.cardTitle.copyWith(fontWeight: FontWeight.w800),
                     ),
             ),
           ),
@@ -361,7 +361,7 @@ class _BillRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = isTotal
-        ? AppTextStyles.body.copyWith(fontWeight: FontWeight.w800, fontSize: 15)
+        ? AppTextStyles.cardTitle.copyWith(fontWeight: FontWeight.w800)
         : AppTextStyles.bodySecondary;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
