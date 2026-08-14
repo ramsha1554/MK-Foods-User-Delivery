@@ -151,7 +151,7 @@ class _InfoCell extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: AppTextStyles.cardTitle.copyWith(fontSize: 11),
+            style: AppTextStyles.badge,
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
@@ -161,7 +161,7 @@ class _InfoCell extends StatelessWidget {
             height: 22,
             child: Text(
               label,
-              style: AppTextStyles.caption.copyWith(fontSize: 9),
+              style: AppTextStyles.badge,
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
