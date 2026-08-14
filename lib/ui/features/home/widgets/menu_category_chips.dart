@@ -3,27 +3,27 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
-import '../models/dish_category.dart';
+import '../models/menu_category.dart';
 
-class DishCategoryChips extends StatelessWidget {
-  final List<DishCategory> dishes;
+class MenuCategoryChips extends StatelessWidget {
+  final List<MenuCategoryChip> categories;
   final bool isLoading;
-  final String? selectedDish;
+  final String? selectedCategory;
   final ValueChanged<String?> onSelected;
 
-  const DishCategoryChips({
+  const MenuCategoryChips({
     super.key,
-    required this.dishes,
+    required this.categories,
     required this.isLoading,
-    required this.selectedDish,
+    required this.selectedCategory,
     required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading && dishes.isEmpty) {
+    if (isLoading && categories.isEmpty) {
       return SizedBox(
-        height: 84,
+        height: 96,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -34,31 +34,31 @@ class DishCategoryChips extends StatelessWidget {
       );
     }
 
-    if (dishes.isEmpty) return const SizedBox.shrink();
+    if (categories.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(
-      height: 84,
+      height: 96,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-        itemCount: dishes.length + 1,
+        itemCount: categories.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: AppSpacing.md),
         itemBuilder: (context, index) {
           if (index == 0) {
             return _ChipItem(
               label: 'All',
               icon: LucideIcons.layoutGrid,
-              selected: selectedDish == null,
+              selected: selectedCategory == null,
               onTap: () => onSelected(null),
             );
           }
-          final dish = dishes[index - 1];
-          final selected = dish.name == selectedDish;
+          final category = categories[index - 1];
+          final selected = category.name == selectedCategory;
           return _ChipItem(
-            label: dish.name,
+            label: category.name,
             icon: LucideIcons.utensils,
             selected: selected,
-            onTap: () => onSelected(selected ? null : dish.name),
+            onTap: () => onSelected(selected ? null : category.name),
           );
         },
       ),
@@ -84,26 +84,31 @@ class _ChipItem extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(999),
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: selected ? AppColors.primary : AppColors.primaryLight,
-              shape: BoxShape.circle,
+      child: SizedBox(
+        width: 80,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: selected ? AppColors.primary : AppColors.primaryLight,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              child: Icon(icon, color: selected ? Colors.white : AppColors.primary),
             ),
-            alignment: Alignment.center,
-            child: Icon(icon, color: selected ? Colors.white : AppColors.primary),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            label,
-            style: AppTextStyles.eyebrow,
-            textAlign: TextAlign.center,
-          ),
-        ],
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              label,
+              style: AppTextStyles.eyebrow,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -115,9 +120,9 @@ class _ChipSkeleton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 68,
+      width: 80,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             width: 56,
@@ -125,7 +130,7 @@ class _ChipSkeleton extends StatelessWidget {
             decoration: const BoxDecoration(color: AppColors.cardBorder, shape: BoxShape.circle),
           ),
           const SizedBox(height: AppSpacing.xs),
-          Container(width: 40, height: 8, color: AppColors.cardBorder),
+          Container(width: 44, height: 8, color: AppColors.cardBorder),
         ],
       ),
     );

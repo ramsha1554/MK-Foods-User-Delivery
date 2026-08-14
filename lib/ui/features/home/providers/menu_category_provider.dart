@@ -2,49 +2,49 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../data/models/customer_models.dart';
 import '../../restaurant/providers/restaurant_provider.dart';
-import '../models/dish_category.dart';
+import '../models/menu_category.dart';
 
-class DishCategoryState {
-  final List<DishCategory> dishes;
+class MenuCategoryState {
+  final List<MenuCategoryChip> categories;
   final bool isLoading;
   final String? cacheKey;
   final DateTime? computedAt;
 
-  const DishCategoryState({
-    this.dishes = const [],
+  const MenuCategoryState({
+    this.categories = const [],
     this.isLoading = false,
     this.cacheKey,
     this.computedAt,
   });
 
-  DishCategoryState copyWith({
-    List<DishCategory>? dishes,
+  MenuCategoryState copyWith({
+    List<MenuCategoryChip>? categories,
     bool? isLoading,
     String? cacheKey,
     DateTime? computedAt,
   }) {
-    return DishCategoryState(
-      dishes: dishes ?? this.dishes,
+    return MenuCategoryState(
+      categories: categories ?? this.categories,
       isLoading: isLoading ?? this.isLoading,
       cacheKey: cacheKey ?? this.cacheKey,
       computedAt: computedAt ?? this.computedAt,
     );
   }
 
-  Set<String> restaurantIdsFor(String dishName) {
-    for (final d in dishes) {
-      if (d.name.toLowerCase() == dishName.toLowerCase()) return d.restaurantIds;
+  Set<String> restaurantIdsFor(String categoryName) {
+    for (final c in categories) {
+      if (c.name.toLowerCase() == categoryName.toLowerCase()) return c.restaurantIds;
     }
     return const {};
   }
 }
 
-class DishCategoryNotifier extends StateNotifier<DishCategoryState> {
+class MenuCategoryNotifier extends StateNotifier<MenuCategoryState> {
   final Ref _ref;
   static const _ttl = Duration(minutes: 15);
   static const _topN = 12;
 
-  DishCategoryNotifier(this._ref) : super(const DishCategoryState());
+  MenuCategoryNotifier(this._ref) : super(const MenuCategoryState());
 
   Future<void> ensureFresh(List<Restaurant> restaurants) async {
     if (restaurants.isEmpty || state.isLoading) return;
@@ -74,34 +74,31 @@ class DishCategoryNotifier extends StateNotifier<DishCategoryState> {
       final restaurantId = detail.restaurant.id;
 
       for (final category in detail.menu) {
-        for (final item in category.items) {
-          if (!item.isAvailable) continue;
-          final trimmed = item.name.trim();
-          if (trimmed.isEmpty) continue;
-          final lower = trimmed.toLowerCase();
+        final trimmed = category.name.trim();
+        if (trimmed.isEmpty) continue;
+        final lower = trimmed.toLowerCase();
 
-          restaurantIdsByName.putIfAbsent(lower, () => {});
-          final alreadyCountedForThisRestaurant =
-              restaurantIdsByName[lower]!.contains(restaurantId);
-          restaurantIdsByName[lower]!.add(restaurantId);
-          displayNames.putIfAbsent(lower, () => trimmed);
-          if (!alreadyCountedForThisRestaurant) {
-            counts[lower] = (counts[lower] ?? 0) + 1;
-          }
+        restaurantIdsByName.putIfAbsent(lower, () => {});
+        final alreadyCountedForThisRestaurant =
+            restaurantIdsByName[lower]!.contains(restaurantId);
+        restaurantIdsByName[lower]!.add(restaurantId);
+        displayNames.putIfAbsent(lower, () => trimmed);
+        if (!alreadyCountedForThisRestaurant) {
+          counts[lower] = (counts[lower] ?? 0) + 1;
         }
       }
     }
 
     final sorted = counts.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
     final top = sorted.take(_topN).map((e) {
-      return DishCategory(
+      return MenuCategoryChip(
         name: displayNames[e.key]!,
         restaurantIds: restaurantIdsByName[e.key]!,
       );
     }).toList();
 
     state = state.copyWith(
-      dishes: top,
+      categories: top,
       isLoading: false,
       cacheKey: key,
       computedAt: DateTime.now(),
@@ -109,6 +106,6 @@ class DishCategoryNotifier extends StateNotifier<DishCategoryState> {
   }
 }
 
-final dishCategoryProvider = StateNotifierProvider<DishCategoryNotifier, DishCategoryState>(
-  (ref) => DishCategoryNotifier(ref),
+final menuCategoryProvider = StateNotifierProvider<MenuCategoryNotifier, MenuCategoryState>(
+  (ref) => MenuCategoryNotifier(ref),
 );

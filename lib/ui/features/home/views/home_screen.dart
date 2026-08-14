@@ -19,10 +19,10 @@ import '../../restaurant/widgets/restaurant_card.dart';
 import '../../../../core/utils/geo_utils.dart';
 import '../models/filter_options.dart';
 import '../providers/filter_provider.dart';
-import '../providers/dish_category_provider.dart';
+import '../providers/menu_category_provider.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/home_search_bar.dart';
-import '../widgets/dish_category_chips.dart';
+import '../widgets/menu_category_chips.dart';
 import '../widgets/home_filter_chips.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -36,9 +36,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   String? _lastFetchedAddressId;
   final _searchController = TextEditingController();
   String _searchQuery = '';
-  // A real menu-item name (e.g. "Butter Chicken"), computed from actual
-  // nearby-restaurant menus — not a backend cuisine tag.
-  String? _selectedDish;
+  // A menu-category name (e.g. "Starters", "Main Course"), computed from
+  // actual nearby-restaurant menus — not a backend cuisine tag.
+  String? _selectedCategory;
 
   void _maybeFetchNearby(String? addressId, double lat, double lng) {
     if (addressId == null || addressId == _lastFetchedAddressId) return;
@@ -50,11 +50,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         );
   }
 
-  // Purely client-side — selecting a dish chip filters the already-loaded
-  // restaurant list (via dishCategoryProvider's restaurantIdsFor). No
-  // backend call, no navigation to a food-item detail view.
-  void _onDishSelected(String? dishName) {
-    setState(() => _selectedDish = dishName);
+  // Purely client-side — selecting a category chip filters the already-loaded
+  // restaurant list (via menuCategoryProvider's restaurantIdsFor). No
+  // backend call, no navigation.
+  void _onCategorySelected(String? categoryName) {
+    setState(() => _selectedCategory = categoryName);
   }
 
   Future<void> _openFilterSheet(dynamic defaultAddress) async {
@@ -232,7 +232,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     RestaurantState state,
     FilterOptions filters,
     dynamic defaultAddress,
-    DishCategoryState dishState,
+    MenuCategoryState categoryState,
   ) {
     var list = List.of(state.restaurants);
 
@@ -241,8 +241,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       list = list.where((r) => r.name.toLowerCase().contains(q)).toList();
     }
 
-    if (_selectedDish != null) {
-      final allowedIds = dishState.restaurantIdsFor(_selectedDish!);
+    if (_selectedCategory != null) {
+      final allowedIds = categoryState.restaurantIdsFor(_selectedCategory!);
       list = list.where((r) => allowedIds.contains(r.id)).toList();
     }
 
@@ -295,18 +295,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildDiscoveryBody(BuildContext context, dynamic defaultAddress, RestaurantState restaurantState) {
     final filters = ref.watch(filterProvider);
-    final dishState = ref.watch(dishCategoryProvider);
+    final categoryState = ref.watch(menuCategoryProvider);
 
     // Fire-and-forget: the notifier guards against duplicate runs and only
     // re-fetches when the restaurant set changes or the 15-min cache expires.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(dishCategoryProvider.notifier).ensureFresh(restaurantState.restaurants);
+      ref.read(menuCategoryProvider.notifier).ensureFresh(restaurantState.restaurants);
     });
 
-    final restaurants = _filteredRestaurants(restaurantState, filters, defaultAddress, dishState);
+    final restaurants = _filteredRestaurants(restaurantState, filters, defaultAddress, categoryState);
     final bool isFirstLoad = restaurantState.isLoading &&
         restaurantState.restaurants.isEmpty &&
-        _selectedDish == null &&
+        _selectedCategory == null &&
         _searchQuery.isEmpty;
 
     return RefreshIndicator(
@@ -330,11 +330,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          DishCategoryChips(
-            dishes: dishState.dishes,
-            isLoading: dishState.isLoading,
-            selectedDish: _selectedDish,
-            onSelected: _onDishSelected,
+          MenuCategoryChips(
+            categories: categoryState.categories,
+            isLoading: categoryState.isLoading,
+            selectedCategory: _selectedCategory,
+            onSelected: _onCategorySelected,
           ),
           const SizedBox(height: AppSpacing.md),
           HomeFilterChips(
@@ -375,8 +375,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   const Icon(LucideIcons.utensils, color: AppColors.primary, size: 28),
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    _selectedDish != null
-                        ? 'No restaurants serve "$_selectedDish" nearby'
+                    _selectedCategory != null
+                        ? 'No restaurants have "$_selectedCategory" nearby'
                         : (_searchQuery.isNotEmpty
                             ? 'No matches for "$_searchQuery"'
                             : 'No restaurants nearby yet'),
