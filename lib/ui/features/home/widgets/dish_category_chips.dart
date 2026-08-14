@@ -84,31 +84,26 @@ class _ChipItem extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(999),
       onTap: onTap,
-      child: SizedBox(
-        width: 68,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: selected ? AppColors.primary : AppColors.primaryLight,
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(icon, color: selected ? Colors.white : AppColors.primary),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 56,
+            height: 56,
+            decoration: BoxDecoration(
+              color: selected ? AppColors.primary : AppColors.primaryLight,
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              label,
-              style: AppTextStyles.caption,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+            alignment: Alignment.center,
+            child: Icon(icon, color: selected ? Colors.white : AppColors.primary),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            label,
+            style: AppTextStyles.eyebrow,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

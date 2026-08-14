@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import '../../orders/views/orders_screen.dart';
 import '../../../../core/animations/app_durations.dart';
 import '../../../../core/animations/app_fade_in.dart';
+import '../../../core/theme/app_avatar_sizes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -24,7 +24,6 @@ import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/home_search_bar.dart';
 import '../widgets/dish_category_chips.dart';
 import '../widgets/home_filter_chips.dart';
-import '../widgets/home_bottom_nav.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -87,12 +86,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  void _showComingSoon(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature — coming soon')),
-    );
-  }
-
   String _firstName(String? fullName) {
     if (fullName == null || fullName.trim().isEmpty) return '';
     return fullName.trim().split(' ').first;
@@ -127,33 +120,53 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        onOrdersTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const OrdersScreen()),
-        ),
-        onProfileTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const ProfileScreen()),
-        ),
-        onUnavailableTap: () => _showComingSoon('This'),
-      ),
       body: SafeArea(
         child: AppFadeIn(
           duration: AppDurations.hero,
           child: Column(
             children: [
-              // ── Greeting ──
+              // ── Greeting + profile avatar ──
               Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppSpacing.lg, AppSpacing.lg, AppSpacing.lg, AppSpacing.sm,
                 ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    authState.user?.name != null
-                        ? 'Hey ${_firstName(authState.user!.name)},'
-                        : 'Hey there,',
-                    style: AppTextStyles.h1,
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        authState.user?.name != null
+                            ? 'Hey ${_firstName(authState.user!.name)},'
+                            : 'Hey there,',
+                        style: AppTextStyles.h2,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                      ),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: AppColors.primaryLight,
+                          shape: BoxShape.circle,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          (authState.user?.name?.isNotEmpty ?? false)
+                              ? authState.user!.name![0].toUpperCase()
+                              : '?',
+                          style: const TextStyle(
+                            fontSize: AppAvatarSizes.initialSmall,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -186,14 +199,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           children: [
                             Text(
                               defaultAddress?.label ?? 'Set delivery address',
-                              style: AppTextStyles.sectionLabel,
+                              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               defaultAddress?.fullAddress ?? 'Add an address to get started',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.eyebrow,
+                              style: AppTextStyles.bodySecondary,
                             ),
                           ],
                         ),
@@ -327,7 +340,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           HomeFilterChips(
             activeFilterCount: filters.activeCount,
             onFiltersTap: () => _openFilterSheet(defaultAddress),
-            onOffersTap: () => _showComingSoon('Offers'),
           ),
           const SizedBox(height: AppSpacing.lg),
           Padding(

@@ -4,19 +4,16 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 
-/// "Offers" stays a UI-only placeholder — no offers/promo model exists on
-/// the backend yet. "Filters" is now real: it opens the Sort & Filter
-/// sheet and shows a badge for how many filters are currently active.
+/// "Filters" opens the Sort & Filter sheet and shows a badge for how many
+/// filters are currently active.
 class HomeFilterChips extends StatelessWidget {
   final int activeFilterCount;
   final VoidCallback onFiltersTap;
-  final VoidCallback onOffersTap;
 
   const HomeFilterChips({
     super.key,
     required this.activeFilterCount,
     required this.onFiltersTap,
-    required this.onOffersTap,
   });
 
   @override
@@ -31,8 +28,6 @@ class HomeFilterChips extends StatelessWidget {
             active: activeFilterCount > 0,
             onTap: onFiltersTap,
           ),
-          const SizedBox(width: AppSpacing.sm),
-          _Chip(icon: LucideIcons.tag, label: 'Offers', onTap: onOffersTap),
         ],
       ),
     );
