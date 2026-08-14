@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 /// Clock icon + "Didn't receive the code?" + a live countdown that becomes
 /// a tappable "Resend" once it reaches zero.
@@ -85,14 +86,13 @@ class _ResendOtpRowState extends State<ResendOtpRow> {
         const SizedBox(width: 6),
         Text(
           "Didn't receive the code? ",
-          style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+          style: AppTextStyles.caption,
         ),
         GestureDetector(
           onTap: canResend ? _handleResendTap : null,
           child: Text(
             canResend ? 'Resend' : 'Resend in $_formatted',
-            style: TextStyle(
-              fontSize: 13,
+            style: AppTextStyles.caption.copyWith(
               fontWeight: FontWeight.w700,
               color: AppColors.primary,
             ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_text_styles.dart';
+
 class AuthInputField extends StatelessWidget {
   final String hintText;
   final Widget prefixIcon;
@@ -49,10 +51,7 @@ class AuthInputField extends StatelessWidget {
         keyboardType: keyboardType,
         maxLength: maxLength,
         onChanged: onChanged,
-        style: const TextStyle(
-          color: Color(0xFF3C3C3C),
-          fontSize: 15,
-        ),
+        style: AppTextStyles.cardTitle.copyWith(color: Color(0xFF3C3C3C)),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),

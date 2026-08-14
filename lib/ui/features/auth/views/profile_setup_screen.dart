@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/animations/app_fade_in.dart';
 import '../../../../core/animations/app_page_transitions.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_3d_button.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../home/views/home_screen.dart';
@@ -54,19 +55,12 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 const SizedBox(height: 60),
                 Text(
                   'Complete Profile',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: AppTextStyles.display.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Tell us your name to get started',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 48),
                 AuthInputField(

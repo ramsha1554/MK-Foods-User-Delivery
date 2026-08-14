@@ -8,6 +8,7 @@ import '../../../../core/animations/app_fade_in.dart';
 import '../../../../core/animations/app_page_transitions.dart';
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_3d_button.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../providers/auth_provider.dart';
@@ -92,11 +93,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Welcome back!',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
+                        style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -104,10 +101,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Enter your mobile number to continue',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.textSecondary,
-                        ),
+                        style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -147,10 +141,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'or continue with',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                            ),
+                            style: AppTextStyles.caption,
                           ),
                         ),
                         const Expanded(child: Divider(color: AppColors.divider)),
@@ -187,10 +178,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                       onTap: () => _phoneFocusNode.requestFocus(),
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 14,
-                          ),
+                          style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                           text: 'New to MK Tours? ',
                           children: [
                             TextSpan(
@@ -211,37 +199,29 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                       children: [
                         Text(
                           'By continuing, you agree to our ',
-                          style: TextStyle(color: AppColors.textHint, fontSize: 12),
+                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
                         ),
                         GestureDetector(
                           onTap: () => _showComingSoon('Terms & Conditions'),
                           child: Text(
                             'Terms & Conditions',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                              decoration: TextDecoration.underline,
-                            ),
+                            style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
                           ),
                         ),
                         Text(
                           ' and ',
-                          style: TextStyle(color: AppColors.textHint, fontSize: 12),
+                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
                         ),
                         GestureDetector(
                           onTap: () => _showComingSoon('Privacy Policy'),
                           child: Text(
                             'Privacy Policy',
-                            style: TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                              decoration: TextDecoration.underline,
-                            ),
+                            style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
                           ),
                         ),
                         Text(
                           '.',
-                          style: TextStyle(color: AppColors.textHint, fontSize: 12),
+                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
                         ),
                       ],
                     ),
@@ -285,11 +265,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
               child: Text(
                 label,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
-                ),
+                style: AppTextStyles.caption.copyWith(color: AppColors.textPrimary),
               ),
             ),
           ],
