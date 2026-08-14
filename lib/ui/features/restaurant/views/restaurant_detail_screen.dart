@@ -474,6 +474,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../data/models/customer_models.dart';
+import '../../../core/theme/app_avatar_sizes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -630,9 +631,9 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
                       color: AppColors.error.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Text(
+                    child: Text(
                       'This restaurant is currently closed.',
-                      style: TextStyle(color: AppColors.error, fontSize: 12, fontWeight: FontWeight.w600),
+                      style: AppTextStyles.caption.copyWith(color: AppColors.error),
                     ),
                   ),
                 ],
@@ -711,7 +712,7 @@ class _HeroFallback extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         name.trim().isEmpty ? '?' : name.trim()[0].toUpperCase(),
-        style: const TextStyle(fontSize: 56, fontWeight: FontWeight.w800, color: AppColors.primary),
+        style: const TextStyle(fontSize: AppAvatarSizes.initialLarge, fontWeight: FontWeight.w800, color: AppColors.primary),
       ),
     );
   }
@@ -850,9 +851,9 @@ class _AddButton extends StatelessWidget {
           color: AppColors.primary,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Text(
+        child: Text(
           'ADD',
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 12, letterSpacing: 0.4),
+          style: AppTextStyles.badge.copyWith(color: Colors.white),
         ),
       ),
     );
@@ -878,7 +879,7 @@ class _QuantityStepper extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _StepperButton(icon: LucideIcons.minus, onTap: onDecrement),
-          Text('$quantity', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 13)),
+          Text('$quantity', style: AppTextStyles.bodySecondary.copyWith(color: Colors.white, fontWeight: FontWeight.w800)),
           _StepperButton(icon: LucideIcons.plus, onTap: onIncrement),
         ],
       ),
@@ -917,7 +918,7 @@ class _SoldOutBadge extends StatelessWidget {
       ),
       child: const Text(
         'SOLD OUT',
-        style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, color: AppColors.textSecondary, letterSpacing: 0.4),
+        style: AppTextStyles.badge,
       ),
     );
   }
@@ -936,9 +937,9 @@ class _DisabledAddButton extends StatelessWidget {
         color: AppColors.cardBorder,
         borderRadius: BorderRadius.circular(8),
       ),
-      child: const Text(
+      child: Text(
         'Add',
-        style: TextStyle(color: AppColors.textHint, fontWeight: FontWeight.w700, fontSize: 12),
+        style: AppTextStyles.caption.copyWith(color: AppColors.textHint, fontWeight: FontWeight.w700),
       ),
     );
   }

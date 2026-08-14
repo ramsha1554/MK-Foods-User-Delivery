@@ -7,6 +7,7 @@ import '../../../../core/animations/app_fade_in.dart';
 import '../../../../core/animations/app_page_transitions.dart';
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_3d_button.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../home/views/home_screen.dart';
@@ -109,20 +110,13 @@ class _OtpVerificationScreenState
                 Text(
                   'Verify your number',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+                  style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "We've sent a 6-digit code to",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -133,11 +127,7 @@ class _OtpVerificationScreenState
                         authState.phone ?? 'your phone',
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textPrimary,
-                        ),
+                        style: AppTextStyles.cardTitle,
                       ),
                     ),
                     const SizedBox(width: 6),
@@ -148,8 +138,7 @@ class _OtpVerificationScreenState
                         children: [
                           Text(
                             'Change',
-                            style: TextStyle(
-                              fontSize: 14,
+                            style: AppTextStyles.body.copyWith(
                               fontWeight: FontWeight.w700,
                               color: AppColors.primary,
                             ),
@@ -164,10 +153,7 @@ class _OtpVerificationScreenState
                 Text(
                   'Enter the 6-digit code',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
+                  style: AppTextStyles.caption,
                 ),
                 const SizedBox(height: 12),
                 AuthInputField(

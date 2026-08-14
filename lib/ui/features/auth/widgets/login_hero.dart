@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 
 
 class LoginHero extends StatelessWidget {
@@ -20,41 +21,22 @@ class LoginHero extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Text(
                   'Great food,',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.textPrimary,
-                    height: 1.15,
-                  ),
+                  style: AppTextStyles.display.copyWith(height: 1.15),
                 ),
-                const Text(
+                Text(
                   'delivered to',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
-                    height: 1.15,
-                  ),
+                  style: AppTextStyles.display.copyWith(color: AppColors.primary, height: 1.15),
                 ),
-                const Text(
+                Text(
                   'your door',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
-                    height: 1.15,
-                  ),
+                  style: AppTextStyles.display.copyWith(color: AppColors.primary, height: 1.15),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   'Delicious meals from your favourite restaurants, delivered fast.',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.textSecondary,
-                    height: 1.4,
-                  ),
+                  style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
                 ),
               ],
             ),

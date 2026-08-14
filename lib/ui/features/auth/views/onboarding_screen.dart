@@ -5,6 +5,7 @@ import '../../../../core/animations/app_page_transitions.dart';
 import '../../../../core/animations/app_slide_in.dart';
 import '../../../../core/constants/app_config.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_3d_button.dart';
 import 'phone_login_screen.dart';
 
@@ -27,8 +28,7 @@ class OnboardingScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 60),
                   child: Text(
                     AppConfig.appNameShort,
-                    style: TextStyle(
-                      fontSize: 32,
+                    style: AppTextStyles.display.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
                     ),
@@ -66,27 +66,22 @@ class OnboardingScreen extends StatelessWidget {
                   children: [
                     Text(
                       'Good Food',
-                      style: TextStyle(
-                        fontSize: 32,
+                      style: AppTextStyles.display.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        height: 1.2,
                       ),
                     ),
                     Text(
                       'Healthy Food',
-                      style: TextStyle(
-                        fontSize: 32,
+                      style: AppTextStyles.display.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        height: 1.2,
                       ),
                     ),
                     const SizedBox(height: 16),
                     Text(
                       'Delicious meals delivered to your door',
-                      style: TextStyle(
-                        fontSize: 14,
+                      style: AppTextStyles.body.copyWith(
                         color: Colors.white.withValues(alpha: 0.6),
                       ),
                     ),
@@ -116,7 +111,7 @@ class OnboardingScreen extends StatelessWidget {
                       },
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(color: Colors.white, fontSize: 14),
+                          style: AppTextStyles.body.copyWith(color: Colors.white),
                           text: "Don't have an Account? ",
                           children: [
                             TextSpan(

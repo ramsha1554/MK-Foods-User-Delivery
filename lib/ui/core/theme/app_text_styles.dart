@@ -4,10 +4,27 @@ import 'app_colors.dart';
 /// Semantic type scale. Every screen should pull from here instead of
 /// writing inline TextStyle(...) — this is what makes typography feel
 /// consistent across the whole app instead of "close enough" per screen.
+///
+/// Scale (7 sizes total — do not add a new size without updating this
+/// comment and getting sign-off, that's how we ended up with 14 sizes
+/// last time):///
+///   28  display     — onboarding / hero headlines only
+///   22  h1          — screen-level titles
+///   18  h2          — section titles / AppBar title
+///   16  cardTitle   — card & list-item titles (restaurant name, item name)
+///   14  body/price  — body copy, prices
+///   12  bodySecondary/caption/sectionLabel — secondary text, metadata, form labels
+///   11  eyebrow/badge — smallest allowed size, sparing use only (chips, eyebrow labels)
 class AppTextStyles {
   AppTextStyles._();
 
-  // Screen-level titles (AppBar overrides live in app_theme.dart already)
+  static const TextStyle display = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w800,
+    color: AppColors.textPrimary,
+    height: 1.2,
+  );
+
   static const TextStyle h1 = TextStyle(
     fontSize: 22,
     fontWeight: FontWeight.w800,
@@ -22,15 +39,13 @@ class AppTextStyles {
     height: 1.3,
   );
 
-  // Card / list-item titles (restaurant name, address label, item name)
   static const TextStyle cardTitle = TextStyle(
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
     height: 1.3,
   );
 
-  // Body copy
   static const TextStyle body = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
@@ -39,13 +54,12 @@ class AppTextStyles {
   );
 
   static const TextStyle bodySecondary = TextStyle(
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: FontWeight.w500,
     color: AppColors.textSecondary,
     height: 1.4,
   );
 
-  // Small metadata (rating, prep time, distance)
   static const TextStyle caption = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w600,
@@ -53,7 +67,6 @@ class AppTextStyles {
     height: 1.3,
   );
 
-  // Prices — always the same weight/size everywhere they appear
   static const TextStyle price = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w800,
@@ -66,7 +79,6 @@ class AppTextStyles {
     color: AppColors.primary,
   );
 
-  // Section eyebrow labels ("DELIVER TO", "COORDINATES")
   static const TextStyle eyebrow = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w700,
@@ -74,18 +86,15 @@ class AppTextStyles {
     letterSpacing: 0.6,
   );
 
-  // Badge / chip text
   static const TextStyle badge = TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.w700,
     letterSpacing: 0.2,
   );
 
-  // Form/section headers within a screen (not full screen titles)
   static const TextStyle sectionLabel = TextStyle(
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: FontWeight.w700,
     color: AppColors.textPrimary,
   );
 }
-

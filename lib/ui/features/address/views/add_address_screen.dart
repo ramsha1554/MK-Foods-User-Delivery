@@ -138,7 +138,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                       borderRadius: BorderRadius.circular(AppRadius.sm),
                       border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                     ),
-                    child: Text(addressState.errorMessage!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
+                    child: Text(addressState.errorMessage!, style: AppTextStyles.caption.copyWith(color: AppColors.error)),
                   ),
                 ],
 
@@ -161,10 +161,9 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                         side: BorderSide(color: isSelected ? AppColors.primary : AppColors.cardBorder),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.pill)),
                         showCheckmark: false,
-                        labelStyle: TextStyle(
+                        labelStyle: AppTextStyles.caption.copyWith(
                           color: isSelected ? Colors.white : AppColors.textPrimary,
                           fontWeight: FontWeight.w600,
-                          fontSize: 13,
                         ),
                       ),
                     );
@@ -233,7 +232,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                         children: [
                           const Icon(LucideIcons.locateFixed, size: 15, color: AppColors.textSecondary),
                           const SizedBox(width: 6),
-                          Text('GPS Coordinates', style: AppTextStyles.sectionLabel.copyWith(fontSize: 12)),
+                          Text('GPS Coordinates', style: AppTextStyles.sectionLabel),
                         ],
                       ),
                       const SizedBox(height: 2),
@@ -297,8 +296,8 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                   ),
                   child: SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('Set as default address',
-                        style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
+                    title: Text('Set as default address',
+                        style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w600)),
                     subtitle: Text(
                       _isFirstAddress
                           ? 'This is your first address and will automatically be set as default.'
@@ -325,7 +324,7 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
                           )
                         : Text(
                             _isEditMode ? 'Update Address' : 'Save Address',
-                            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            style: AppTextStyles.cardTitle.copyWith(fontWeight: FontWeight.bold),
                           ),
                   ),
                 ),
