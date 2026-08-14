@@ -14,6 +14,7 @@ import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../address/providers/address_provider.dart';
 import '../../cart/providers/cart_provider.dart';
+import '../../orders/views/order_details_screen.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   const CheckoutScreen({super.key});
@@ -138,7 +139,12 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         icon: LucideIcons.circleCheck,
         barrierDismissible: false,
         actionLabel: 'Done',
-        onAction: () => Navigator.popUntil(context, (route) => route.isFirst),
+        onAction: () => Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => OrderDetailsScreen(orderId: order.id),
+          ),
+        ),
       );
     } catch (e) {
       _showError(e.toString().replaceAll('Exception: ', ''));
