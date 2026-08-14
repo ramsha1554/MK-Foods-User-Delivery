@@ -27,6 +27,7 @@ class PhoneLoginScreen extends ConsumerStatefulWidget {
 class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
   final _phoneController = TextEditingController();
   final _phoneFocusNode = FocusNode();
+  String _dialCode = '+44';
 
   @override
   void dispose() {
@@ -45,7 +46,7 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
    
     final digits = raw.replaceAll(RegExp(r'[^0-9]'), '');
     final national = digits.startsWith('0') ? digits.substring(1) : digits;
-    final phone = '+44$national';
+    final phone = '$_dialCode$national';
 
     ref.read(authProvider.notifier).requestOtp(phone);
   }
@@ -108,7 +109,9 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CountryCodeSelector(),
+                        CountryCodeSelector(
+                          onChanged: (c) => _dialCode = c.dialCode,
+                        ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: AuthInputField(
