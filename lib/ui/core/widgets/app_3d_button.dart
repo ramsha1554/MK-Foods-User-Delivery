@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../theme/app_colors.dart';
+import '../theme/app_text_styles.dart';
 
 class App3dButton extends StatelessWidget {
   final String text;
@@ -43,11 +45,7 @@ class App3dButton extends StatelessWidget {
               ),
               child: Text(
                 text,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+                style: AppTextStyles.cardTitle.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
