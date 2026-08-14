@@ -72,6 +72,12 @@ class _ChipItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
+  // eyebrow is 11px; locking an explicit height makes two lines (11 * 1.3 * 2)
+  // a fixed value so every chip reserves the same label space regardless of
+  // whether its name wraps to one line or two.
+  static const double _labelLineHeight = 1.3;
+  static const double _labelTwoLineHeight = 28.6;
+
   const _ChipItem({
     required this.label,
     required this.icon,
@@ -100,12 +106,15 @@ class _ChipItem extends StatelessWidget {
               child: Icon(icon, color: selected ? Colors.white : AppColors.primary),
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              label,
-              style: AppTextStyles.eyebrow,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
+            SizedBox(
+              height: _labelTwoLineHeight,
+              child: Text(
+                label,
+                style: AppTextStyles.eyebrow.copyWith(height: _labelLineHeight),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),
