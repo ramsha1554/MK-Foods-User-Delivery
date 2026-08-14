@@ -21,6 +21,7 @@ class HomeFilterChips extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           _Chip(
             icon: LucideIcons.slidersHorizontal,
@@ -44,33 +45,33 @@ class _Chip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        borderRadius: BorderRadius.circular(999),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-          decoration: BoxDecoration(
-            color: active ? AppColors.primaryLight : AppColors.surface,
-            borderRadius: BorderRadius.circular(999),
-            border: Border.all(color: active ? AppColors.primary : AppColors.cardBorder),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 14, color: active ? AppColors.primary : AppColors.textSecondary),
-              const SizedBox(width: 4),
-              Flexible(
-                child: Text(
-                  label,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyles.caption.copyWith(
-                    color: active ? AppColors.primary : AppColors.textSecondary,
-                  ),
-                ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(999),
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: active ? AppColors.primaryLight : AppColors.surface,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: active ? AppColors.primary : AppColors.cardBorder),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 14, color: active ? AppColors.primary : AppColors.textSecondary),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyles.caption.copyWith(
+                color: active ? AppColors.primary : AppColors.textSecondary,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
