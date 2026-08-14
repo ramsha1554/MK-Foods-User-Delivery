@@ -551,7 +551,7 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
     final imageUrl = resolveMediaUrl(restaurant.coverImage ?? restaurant.logo);
     final categoryNames = widget.detail.menu.map((c) => c.name).toList();
 
-    return CustomScrollView(
+    final scrollView = CustomScrollView(
       slivers: [
         // ── Full-bleed hero with overlaid back button + overlapping info card ──
         SliverToBoxAdapter(
@@ -581,18 +581,6 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [AppColors.scrim, Colors.transparent],
-                    ),
-                  ),
-                ),
-              ),
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: _HeroIconButton(
-                      icon: LucideIcons.arrowLeft,
-                      onTap: () => Navigator.of(context).maybePop(),
                     ),
                   ),
                 ),
@@ -666,6 +654,29 @@ class _RestaurantDetailBodyState extends State<_RestaurantDetailBody> {
           ),
         ],
         const SliverToBoxAdapter(child: SizedBox(height: 90)),
+      ],
+    );
+
+    return Stack(
+      children: [
+        scrollView,
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: _HeroIconButton(
+                  icon: LucideIcons.arrowLeft,
+                  onTap: () => Navigator.of(context).maybePop(),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
