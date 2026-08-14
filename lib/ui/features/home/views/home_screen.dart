@@ -86,12 +86,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  void _showComingSoon(String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature — coming soon')),
-    );
-  }
-
   String _firstName(String? fullName) {
     if (fullName == null || fullName.trim().isEmpty) return '';
     return fullName.trim().split(' ').first;
@@ -138,6 +132,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ),
                 child: Row(
                   children: [
+                    Expanded(
+                      child: Text(
+                        authState.user?.name != null
+                            ? 'Hey ${_firstName(authState.user!.name)},'
+                            : 'Hey there,',
+                        style: AppTextStyles.h2,
+                      ),
+                    ),
+                    const SizedBox(width: AppSpacing.md),
                     GestureDetector(
                       onTap: () => Navigator.push(
                         context,
@@ -161,15 +164,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             color: AppColors.primary,
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSpacing.md),
-                    Expanded(
-                      child: Text(
-                        authState.user?.name != null
-                            ? 'Hey ${_firstName(authState.user!.name)},'
-                            : 'Hey there,',
-                        style: AppTextStyles.h1,
                       ),
                     ),
                   ],
@@ -205,14 +199,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           children: [
                             Text(
                               defaultAddress?.label ?? 'Set delivery address',
-                              style: AppTextStyles.sectionLabel,
+                              style: AppTextStyles.body.copyWith(fontWeight: FontWeight.w700),
                             ),
                             const SizedBox(height: 2),
                             Text(
                               defaultAddress?.fullAddress ?? 'Add an address to get started',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: AppTextStyles.eyebrow,
+                              style: AppTextStyles.bodySecondary,
                             ),
                           ],
                         ),
@@ -346,7 +340,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           HomeFilterChips(
             activeFilterCount: filters.activeCount,
             onFiltersTap: () => _openFilterSheet(defaultAddress),
-            onOffersTap: () => _showComingSoon('Offers'),
           ),
           const SizedBox(height: AppSpacing.lg),
           Padding(
