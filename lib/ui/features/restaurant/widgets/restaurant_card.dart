@@ -6,6 +6,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/animations/app_scale_tap.dart';
 import '../../../../data/models/customer_models.dart';
+import '../../../core/theme/app_avatar_sizes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -163,7 +164,7 @@ class _AvatarLetter extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         name.trim().isNotEmpty ? name.trim()[0].toUpperCase() : '?',
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: AppColors.primary),
+        style: const TextStyle(fontSize: AppAvatarSizes.initialSmall, fontWeight: FontWeight.w800, color: AppColors.primary),
       ),
     );
   }

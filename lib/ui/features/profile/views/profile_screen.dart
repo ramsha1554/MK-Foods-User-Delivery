@@ -7,6 +7,7 @@ import '../../../../core/di/locator.dart';
 import '../../../../data/models/auth_models.dart';
 import '../../../../data/models/customer_models.dart';
 import '../../../../data/repositories/customer_repository.dart';
+import '../../../core/theme/app_avatar_sizes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
@@ -153,7 +154,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 alignment: Alignment.center,
                 child: Text(
                   (user.name?.isNotEmpty ?? false) ? user.name![0].toUpperCase() : '?',
-                  style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: AppColors.primary),
+                  style: const TextStyle(fontSize: AppAvatarSizes.initialMedium, fontWeight: FontWeight.w800, color: AppColors.primary),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
