@@ -20,11 +20,7 @@ class AppTheme {
         elevation: 0,
         backgroundColor: Colors.transparent,
         foregroundColor: AppColors.textPrimary,
-        titleTextStyle: TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        titleTextStyle: AppTextStyles.h2,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
