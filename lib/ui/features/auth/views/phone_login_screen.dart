@@ -136,47 +136,58 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
                       onPressed:
                           authState.status == AuthStatus.loading ? null : _requestOtp,
                     ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        const Expanded(child: Divider(color: AppColors.divider)),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'or continue with',
-                            style: AppTextStyles.caption,
+                    // TODO: temporarily hidden, re-enable when ready.
+                    // Hides the Apple/Google sign-in buttons and the
+                    // "or continue with" divider that only separated them
+                    // from the phone-login form.
+                    Visibility(
+                      visible: false,
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              const Expanded(child: Divider(color: AppColors.divider)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                child: Text(
+                                  'or continue with',
+                                  style: AppTextStyles.caption,
+                                ),
+                              ),
+                              const Expanded(child: Divider(color: AppColors.divider)),
+                            ],
                           ),
-                        ),
-                        const Expanded(child: Divider(color: AppColors.divider)),
-                      ],
+                          const SizedBox(height: 24),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: AppScaleTap(
+                                  scale: 0.96,
+                                  child: _socialButton(
+                                    label: 'Continue with Google',
+                                    icon: 'G',
+                                    onTap: () => _showComingSoon('Google sign-in'),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: AppScaleTap(
+                                  scale: 0.96,
+                                  child: _socialButton(
+                                    label: 'Continue with Apple',
+                                    icon: 'A',
+                                    onTap: () => _showComingSoon('Apple sign-in'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 32),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppScaleTap(
-                            scale: 0.96,
-                            child: _socialButton(
-                              label: 'Continue with Google',
-                              icon: 'G',
-                              onTap: () => _showComingSoon('Google sign-in'),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: AppScaleTap(
-                            scale: 0.96,
-                            child: _socialButton(
-                              label: 'Continue with Apple',
-                              icon: 'A',
-                              onTap: () => _showComingSoon('Apple sign-in'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
                     GestureDetector(
                       onTap: () => _phoneFocusNode.requestFocus(),
                       child: RichText(
