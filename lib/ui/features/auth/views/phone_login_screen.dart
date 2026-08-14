@@ -73,178 +73,190 @@ class _PhoneLoginScreenState extends ConsumerState<PhoneLoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.primaryLight,
-      body: SingleChildScrollView(
-        child: AppFadeIn(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SafeArea(bottom: false, child: LoginHero()),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(28),
-                    topRight: Radius.circular(28),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            child: AppFadeIn(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SafeArea(bottom: false, child: LoginHero()),
+                      Expanded(
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(28),
+                              topRight: Radius.circular(28),
+                            ),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
+                          child: Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Welcome back!',
+                                  style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Enter your mobile number to continue',
+                                  style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CountryCodeSelector(
+                                    onChanged: (c) => _dialCode = c.dialCode,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: AuthInputField(
+                                      hintText: 'Enter mobile number',
+                                      prefixIcon: Icon(
+                                        LucideIcons.phone,
+                                        size: 20,
+                                        color: AppColors.textHint,
+                                      ),
+                                      controller: _phoneController,
+                                      focusNode: _phoneFocusNode,
+                                      keyboardType: TextInputType.phone,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 24),
+                              App3dButton(
+                                text: authState.status == AuthStatus.loading
+                                    ? 'Sending...'
+                                    : 'Continue',
+                                onPressed:
+                                    authState.status == AuthStatus.loading ? null : _requestOtp,
+                              ),
+                              // TODO: temporarily hidden, re-enable when ready.
+                              // Hides the Apple/Google sign-in buttons and the
+                              // "or continue with" divider that only separated them
+                              // from the phone-login form.
+                              Visibility(
+                                visible: false,
+                                child: Column(
+                                  children: [
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      children: [
+                                        const Expanded(child: Divider(color: AppColors.divider)),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                                          child: Text(
+                                            'or continue with',
+                                            style: AppTextStyles.caption,
+                                          ),
+                                        ),
+                                        const Expanded(child: Divider(color: AppColors.divider)),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 24),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: AppScaleTap(
+                                            scale: 0.96,
+                                            child: _socialButton(
+                                              label: 'Continue with Google',
+                                              icon: 'G',
+                                              onTap: () => _showComingSoon('Google sign-in'),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: AppScaleTap(
+                                            scale: 0.96,
+                                            child: _socialButton(
+                                              label: 'Continue with Apple',
+                                              icon: 'A',
+                                              onTap: () => _showComingSoon('Apple sign-in'),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 32),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              GestureDetector(
+                                onTap: () => _phoneFocusNode.requestFocus(),
+                                child: RichText(
+                                  text: TextSpan(
+                                    style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
+                                    text: 'New to MK Tours? ',
+                                    children: [
+                                      TextSpan(
+                                        text: 'Create an account',
+                                        style: TextStyle(
+                                          color: AppColors.primary,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Text(
+                                    'By continuing, you agree to our ',
+                                    style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _showComingSoon('Terms & Conditions'),
+                                    child: Text(
+                                      'Terms & Conditions',
+                                      style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                  Text(
+                                    ' and ',
+                                    style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => _showComingSoon('Privacy Policy'),
+                                    child: Text(
+                                      'Privacy Policy',
+                                      style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
+                                    ),
+                                  ),
+                                  Text(
+                                    '.',
+                                    style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Welcome back!',
-                        style: AppTextStyles.h1.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Enter your mobile number to continue',
-                        style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CountryCodeSelector(
-                          onChanged: (c) => _dialCode = c.dialCode,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: AuthInputField(
-                            hintText: 'Enter mobile number',
-                            prefixIcon: Icon(
-                              LucideIcons.phone,
-                              size: 20,
-                              color: AppColors.textHint,
-                            ),
-                            controller: _phoneController,
-                            focusNode: _phoneFocusNode,
-                            keyboardType: TextInputType.phone,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    App3dButton(
-                      text: authState.status == AuthStatus.loading
-                          ? 'Sending...'
-                          : 'Continue',
-                      onPressed:
-                          authState.status == AuthStatus.loading ? null : _requestOtp,
-                    ),
-                    // TODO: temporarily hidden, re-enable when ready.
-                    // Hides the Apple/Google sign-in buttons and the
-                    // "or continue with" divider that only separated them
-                    // from the phone-login form.
-                    Visibility(
-                      visible: false,
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 24),
-                          Row(
-                            children: [
-                              const Expanded(child: Divider(color: AppColors.divider)),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                child: Text(
-                                  'or continue with',
-                                  style: AppTextStyles.caption,
-                                ),
-                              ),
-                              const Expanded(child: Divider(color: AppColors.divider)),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: AppScaleTap(
-                                  scale: 0.96,
-                                  child: _socialButton(
-                                    label: 'Continue with Google',
-                                    icon: 'G',
-                                    onTap: () => _showComingSoon('Google sign-in'),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: AppScaleTap(
-                                  scale: 0.96,
-                                  child: _socialButton(
-                                    label: 'Continue with Apple',
-                                    icon: 'A',
-                                    onTap: () => _showComingSoon('Apple sign-in'),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _phoneFocusNode.requestFocus(),
-                      child: RichText(
-                        text: TextSpan(
-                          style: AppTextStyles.body.copyWith(color: AppColors.textSecondary),
-                          text: 'New to MK Tours? ',
-                          children: [
-                            TextSpan(
-                              text: 'Create an account',
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          'By continuing, you agree to our ',
-                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
-                        ),
-                        GestureDetector(
-                          onTap: () => _showComingSoon('Terms & Conditions'),
-                          child: Text(
-                            'Terms & Conditions',
-                            style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
-                          ),
-                        ),
-                        Text(
-                          ' and ',
-                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
-                        ),
-                        GestureDetector(
-                          onTap: () => _showComingSoon('Privacy Policy'),
-                          child: Text(
-                            'Privacy Policy',
-                            style: AppTextStyles.caption.copyWith(decoration: TextDecoration.underline),
-                          ),
-                        ),
-                        Text(
-                          '.',
-                          style: AppTextStyles.caption.copyWith(color: AppColors.textHint),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
