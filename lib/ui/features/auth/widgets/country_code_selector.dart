@@ -1,25 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../../core/data/countries.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import 'country_picker_sheet.dart';
 
-/// Displays the fixed UK country code for the phone field.
+/// Displays the currently selected country code for the phone field.
 ///
-/// This app currently only serves the UK, so the selector is intentionally
-/// static (+44) rather than pulling in a full country-picker package.
-/// The chevron is present to visually match the target design but is a
-/// placeholder — wire [onTap] to a real picker later only if multi-country
-/// support is actually needed.
-class CountryCodeSelector extends StatelessWidget {
-  final VoidCallback? onTap;
+/// Tapping opens a searchable picker ([showCountryPicker]) with the full
+/// countries list; picking one updates the flag + dial code shown here and
+/// reports the new country through [onChanged].
+class CountryCodeSelector extends StatefulWidget {
+  final Country initialCountry;
+  final ValueChanged<Country>? onChanged;
 
-  const CountryCodeSelector({super.key, this.onTap});
+  const CountryCodeSelector({
+    super.key,
+    this.initialCountry = unitedKingdom,
+    this.onChanged,
+  });
+
+  @override
+  State<CountryCodeSelector> createState() => _CountryCodeSelectorState();
+}
+
+class _CountryCodeSelectorState extends State<CountryCodeSelector> {
+  late Country _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.initialCountry;
+  }
+
+  Future<void> _openPicker() async {
+    final picked = await showCountryPicker(context, initial: _selected);
+    if (picked != null) {
+      setState(() => _selected = picked);
+      widget.onChanged?.call(picked);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: _openPicker,
       child: Container(
         height: 56,
         padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -30,13 +56,13 @@ class CountryCodeSelector extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('🇬🇧', style: TextStyle(fontSize: 18)),
-            SizedBox(width: 6),
+            Text(_selected.flag, style: const TextStyle(fontSize: 18)),
+            const SizedBox(width: 6),
             Text(
-              '+44',
+              _selected.dialCode,
               style: AppTextStyles.cardTitle.copyWith(fontWeight: FontWeight.w600),
             ),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             Icon(LucideIcons.chevronDown, size: 16, color: AppColors.textSecondary),
           ],
         ),
