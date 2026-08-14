@@ -144,19 +144,27 @@ class _FilterSheetState extends State<_FilterSheet> {
                       const SizedBox(height: AppSpacing.md),
                     ],
 
-                    SwitchListTile(
-                      value: _draft.openNowOnly,
-                      onChanged: (v) => setState(() => _draft = _draft.copyWith(openNowOnly: v)),
-                      title: const Text('Open Now', style: AppTextStyles.body),
-                      activeThumbColor: AppColors.primary,
-                      contentPadding: EdgeInsets.zero,
+                    // TODO: temporarily hidden, re-enable when ready.
+                    Visibility(
+                      visible: false,
+                      child: SwitchListTile(
+                        value: _draft.openNowOnly,
+                        onChanged: (v) => setState(() => _draft = _draft.copyWith(openNowOnly: v)),
+                        title: const Text('Open Now', style: AppTextStyles.body),
+                        activeThumbColor: AppColors.primary,
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
-                    SwitchListTile(
-                      value: _draft.freeDeliveryOnly,
-                      onChanged: (v) => setState(() => _draft = _draft.copyWith(freeDeliveryOnly: v)),
-                      title: const Text('Free Delivery', style: AppTextStyles.body),
-                      activeThumbColor: AppColors.primary,
-                      contentPadding: EdgeInsets.zero,
+                    // TODO: temporarily hidden, re-enable when ready.
+                    Visibility(
+                      visible: false,
+                      child: SwitchListTile(
+                        value: _draft.freeDeliveryOnly,
+                        onChanged: (v) => setState(() => _draft = _draft.copyWith(freeDeliveryOnly: v)),
+                        title: const Text('Free Delivery', style: AppTextStyles.body),
+                        activeThumbColor: AppColors.primary,
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.xxl),
                   ],
