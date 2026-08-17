@@ -155,6 +155,12 @@ class ApiClient {
   }
 
   ApiResponse _handleResponse(Response response) {
+    if (response.data is! Map<String, dynamic>) {
+      throw ApiException(
+        statusCode: response.statusCode ?? 0,
+        message: 'Unexpected response format from server.',
+      );
+    }
     final data = response.data as Map<String, dynamic>;
     final apiResponse = ApiResponse.fromJson(data);
 
@@ -184,7 +190,9 @@ class ApiClient {
     }
 
     if (e.response != null) {
-      final body = e.response!.data as Map<String, dynamic>?;
+      final body = e.response?.data is Map<String, dynamic>
+          ? e.response!.data as Map<String, dynamic>
+          : null;
       return ApiException(
         statusCode: e.response!.statusCode ?? 0,
         message: body?['message'] as String? ?? 'Unknown error',
