@@ -2,6 +2,7 @@
     <!-- Required for getting the user's current location for the map picker. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:label="MK Tours Food Delivery"
