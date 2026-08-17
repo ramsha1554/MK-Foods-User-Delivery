@@ -4,6 +4,9 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/animations/app_fade_in.dart';
 import '../../../../core/animations/app_page_transitions.dart';
+import '../../../../core/di/locator.dart';
+import '../../../../data/models/customer_models.dart';
+import '../../../../data/repositories/customer_repository.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_3d_button.dart';
@@ -22,6 +25,7 @@ class ProfileSetupScreen extends ConsumerStatefulWidget {
 
 class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
   final _nameController = TextEditingController();
+  bool _isSaving = false;
 
   @override
   void dispose() {
@@ -29,17 +33,35 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
     super.dispose();
   }
 
-  void _saveProfile() {
+  Future<void> _saveProfile() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       AppSnackbar.show(context, 'Please enter your name', type: AppSnackbarType.error);
       return;
     }
-    ref.read(authProvider.notifier).updateName(name);
-    Navigator.of(context).pushAndRemoveUntil(
-      SlideUpPageRoute(page: const HomeScreen()),
-      (route) => false,
-    );
+
+    setState(() => _isSaving = true);
+    try {
+      final updated = await locator<CustomerRepository>().updateProfile(
+        UpdateProfileRequest(name: name),
+      );
+      await ref.read(authProvider.notifier).refreshAfterProfileUpdate(updated);
+      if (!mounted) return;
+      Navigator.of(context).pushAndRemoveUntil(
+        SlideUpPageRoute(page: const HomeScreen()),
+        (route) => false,
+      );
+    } catch (e) {
+      if (mounted) {
+        AppSnackbar.show(
+          context,
+          e.toString().replaceAll('Exception: ', ''),
+          type: AppSnackbarType.error,
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
   }
 
   @override
@@ -74,8 +96,8 @@ class _ProfileSetupScreenState extends ConsumerState<ProfileSetupScreen> {
                 ),
                 const SizedBox(height: 32),
                 App3dButton(
-                  text: 'Save',
-                  onPressed: _saveProfile,
+                  text: _isSaving ? 'Saving...' : 'Save',
+                  onPressed: _isSaving ? null : _saveProfile,
                 ),
               ],
             ),

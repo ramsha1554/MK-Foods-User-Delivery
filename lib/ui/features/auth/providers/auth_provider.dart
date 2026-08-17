@@ -152,14 +152,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<void> updateName(String name) async {
-    await _storage.saveName(name);
-    state = state.copyWith(
-      user: state.user?.copyWith(name: name),
-    );
-  }
-
-
   Future<void> logout() async {
     try {
       await _repository.logout();        
