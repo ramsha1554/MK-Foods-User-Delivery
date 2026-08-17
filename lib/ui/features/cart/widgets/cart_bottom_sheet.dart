@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
@@ -12,9 +13,17 @@ import '../providers/cart_provider.dart';
 class CartBottomBar extends ConsumerWidget {
   const CartBottomBar({super.key});
 
+  String _shortfallMessage(double shortfall) {
+    return 'Add £${shortfall.toStringAsFixed(2)} more to place your order';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final cart = ref.watch(cartProvider);
+    final minimumMet = cart.isMinimumOrderMet;
+    final shortfall =
+        ((cart.minimumOrder ?? 0) - cart.subtotal).clamp(0, double.infinity).toDouble();
+    final shortfallMessage = _shortfallMessage(shortfall);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 220),
@@ -29,52 +38,81 @@ class CartBottomBar extends ConsumerWidget {
               top: false,
               child: AppScaleTap(
                 scale: 0.97,
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const CheckoutScreen()),
-                ),
+                onTap: () {
+                  if (minimumMet) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const CheckoutScreen()),
+                    );
+                  } else {
+                    HapticFeedback.mediumImpact();
+                  }
+                },
                 child: Container(
                   margin: const EdgeInsets.fromLTRB(AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.md),
                   padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: AppSpacing.md),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: minimumMet ? AppColors.primary : AppColors.warning,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.35),
+                        color: (minimumMet ? AppColors.primary : AppColors.warning).withValues(alpha: 0.35),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
                     ],
                   ),
-                  child: Row(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.22),
-                          borderRadius: BorderRadius.circular(20),
+                      if (!minimumMet) ...[
+                        Row(
+                          children: [
+                            const Icon(LucideIcons.triangleAlert, color: Colors.white, size: 14),
+                            const SizedBox(width: AppSpacing.xs),
+                            Expanded(
+                              child: Text(
+                                shortfallMessage,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTextStyles.caption.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          '${cart.itemCount}',
-                          style: AppTextStyles.bodySecondary.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
-                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                      ],
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.22),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              '${cart.itemCount}',
+                              style: AppTextStyles.bodySecondary.copyWith(color: Colors.white, fontWeight: FontWeight.w800),
+                            ),
+                          ),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              cart.restaurantName ?? 'View Cart',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppTextStyles.body.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
+                            ),
+                          ),
+                          Text(
+                            '£${cart.subtotal.toStringAsFixed(2)}',
+                            style: AppTextStyles.priceAccent.copyWith(color: Colors.white),
+                          ),
+                          const SizedBox(width: 6),
+                          const Icon(LucideIcons.chevronRight, color: Colors.white, size: 18),
+                        ],
                       ),
-                      const SizedBox(width: AppSpacing.sm),
-                      Expanded(
-                        child: Text(
-                          cart.restaurantName ?? 'View Cart',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: AppTextStyles.body.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
-                        ),
-                      ),
-                      Text(
-                        '£${cart.subtotal.toStringAsFixed(2)}',
-                        style: AppTextStyles.priceAccent.copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(width: 6),
-                      const Icon(LucideIcons.chevronRight, color: Colors.white, size: 18),
                     ],
                   ),
                 ),
