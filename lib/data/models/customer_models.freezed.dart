@@ -31,7 +31,7 @@ mixin _$SaveAddressRequest {
   double get latitude => throw _privateConstructorUsedError;
   @JsonKey(name: 'isDefault')
   bool get isDefault => throw _privateConstructorUsedError;
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   String? get deliveryInstructions => throw _privateConstructorUsedError;
 
   /// Serializes this SaveAddressRequest to a JSON map.
@@ -60,7 +60,8 @@ abstract class $SaveAddressRequestCopyWith<$Res> {
     double longitude,
     double latitude,
     @JsonKey(name: 'isDefault') bool isDefault,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   });
 }
 
@@ -151,7 +152,8 @@ abstract class _$$SaveAddressRequestImplCopyWith<$Res>
     double longitude,
     double latitude,
     @JsonKey(name: 'isDefault') bool isDefault,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   });
 }
 
@@ -234,7 +236,8 @@ class _$SaveAddressRequestImpl implements _SaveAddressRequest {
     required this.longitude,
     required this.latitude,
     @JsonKey(name: 'isDefault') this.isDefault = false,
-    @JsonKey(name: 'deliveryInstructions') this.deliveryInstructions,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    this.deliveryInstructions,
   });
 
   factory _$SaveAddressRequestImpl.fromJson(Map<String, dynamic> json) =>
@@ -259,7 +262,7 @@ class _$SaveAddressRequestImpl implements _SaveAddressRequest {
   @JsonKey(name: 'isDefault')
   final bool isDefault;
   @override
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   final String? deliveryInstructions;
 
   @override
@@ -331,7 +334,8 @@ abstract class _SaveAddressRequest implements SaveAddressRequest {
     required final double longitude,
     required final double latitude,
     @JsonKey(name: 'isDefault') final bool isDefault,
-    @JsonKey(name: 'deliveryInstructions') final String? deliveryInstructions,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    final String? deliveryInstructions,
   }) = _$SaveAddressRequestImpl;
 
   factory _SaveAddressRequest.fromJson(Map<String, dynamic> json) =
@@ -356,7 +360,7 @@ abstract class _SaveAddressRequest implements SaveAddressRequest {
   @JsonKey(name: 'isDefault')
   bool get isDefault;
   @override
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   String? get deliveryInstructions;
 
   /// Create a copy of SaveAddressRequest
@@ -4542,6 +4546,7 @@ CancelOrderRequest _$CancelOrderRequestFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$CancelOrderRequest {
+  @JsonKey(includeIfNull: false)
   String? get reason => throw _privateConstructorUsedError;
 
   /// Serializes this CancelOrderRequest to a JSON map.
@@ -4561,7 +4566,7 @@ abstract class $CancelOrderRequestCopyWith<$Res> {
     $Res Function(CancelOrderRequest) then,
   ) = _$CancelOrderRequestCopyWithImpl<$Res, CancelOrderRequest>;
   @useResult
-  $Res call({String? reason});
+  $Res call({@JsonKey(includeIfNull: false) String? reason});
 }
 
 /// @nodoc
@@ -4600,7 +4605,7 @@ abstract class _$$CancelOrderRequestImplCopyWith<$Res>
   ) = __$$CancelOrderRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? reason});
+  $Res call({@JsonKey(includeIfNull: false) String? reason});
 }
 
 /// @nodoc
@@ -4631,12 +4636,13 @@ class __$$CancelOrderRequestImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$CancelOrderRequestImpl implements _CancelOrderRequest {
-  const _$CancelOrderRequestImpl({this.reason});
+  const _$CancelOrderRequestImpl({@JsonKey(includeIfNull: false) this.reason});
 
   factory _$CancelOrderRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$CancelOrderRequestImplFromJson(json);
 
   @override
+  @JsonKey(includeIfNull: false)
   final String? reason;
 
   @override
@@ -4674,13 +4680,15 @@ class _$CancelOrderRequestImpl implements _CancelOrderRequest {
 }
 
 abstract class _CancelOrderRequest implements CancelOrderRequest {
-  const factory _CancelOrderRequest({final String? reason}) =
-      _$CancelOrderRequestImpl;
+  const factory _CancelOrderRequest({
+    @JsonKey(includeIfNull: false) final String? reason,
+  }) = _$CancelOrderRequestImpl;
 
   factory _CancelOrderRequest.fromJson(Map<String, dynamic> json) =
       _$CancelOrderRequestImpl.fromJson;
 
   @override
+  @JsonKey(includeIfNull: false)
   String? get reason;
 
   /// Create a copy of CancelOrderRequest
@@ -5072,8 +5080,9 @@ mixin _$SubmitRatingRequest {
   String get orderId => throw _privateConstructorUsedError;
   @JsonKey(name: 'restaurantRating')
   int get restaurantRating => throw _privateConstructorUsedError;
-  @JsonKey(name: 'driverRating')
+  @JsonKey(name: 'driverRating', includeIfNull: false)
   int? get driverRating => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get comment => throw _privateConstructorUsedError;
 
   /// Serializes this SubmitRatingRequest to a JSON map.
@@ -5096,8 +5105,8 @@ abstract class $SubmitRatingRequestCopyWith<$Res> {
   $Res call({
     @JsonKey(name: 'orderId') String orderId,
     @JsonKey(name: 'restaurantRating') int restaurantRating,
-    @JsonKey(name: 'driverRating') int? driverRating,
-    String? comment,
+    @JsonKey(name: 'driverRating', includeIfNull: false) int? driverRating,
+    @JsonKey(includeIfNull: false) String? comment,
   });
 }
 
@@ -5157,8 +5166,8 @@ abstract class _$$SubmitRatingRequestImplCopyWith<$Res>
   $Res call({
     @JsonKey(name: 'orderId') String orderId,
     @JsonKey(name: 'restaurantRating') int restaurantRating,
-    @JsonKey(name: 'driverRating') int? driverRating,
-    String? comment,
+    @JsonKey(name: 'driverRating', includeIfNull: false) int? driverRating,
+    @JsonKey(includeIfNull: false) String? comment,
   });
 }
 
@@ -5210,8 +5219,8 @@ class _$SubmitRatingRequestImpl implements _SubmitRatingRequest {
   const _$SubmitRatingRequestImpl({
     @JsonKey(name: 'orderId') required this.orderId,
     @JsonKey(name: 'restaurantRating') required this.restaurantRating,
-    @JsonKey(name: 'driverRating') this.driverRating,
-    this.comment,
+    @JsonKey(name: 'driverRating', includeIfNull: false) this.driverRating,
+    @JsonKey(includeIfNull: false) this.comment,
   });
 
   factory _$SubmitRatingRequestImpl.fromJson(Map<String, dynamic> json) =>
@@ -5224,9 +5233,10 @@ class _$SubmitRatingRequestImpl implements _SubmitRatingRequest {
   @JsonKey(name: 'restaurantRating')
   final int restaurantRating;
   @override
-  @JsonKey(name: 'driverRating')
+  @JsonKey(name: 'driverRating', includeIfNull: false)
   final int? driverRating;
   @override
+  @JsonKey(includeIfNull: false)
   final String? comment;
 
   @override
@@ -5278,8 +5288,9 @@ abstract class _SubmitRatingRequest implements SubmitRatingRequest {
   const factory _SubmitRatingRequest({
     @JsonKey(name: 'orderId') required final String orderId,
     @JsonKey(name: 'restaurantRating') required final int restaurantRating,
-    @JsonKey(name: 'driverRating') final int? driverRating,
-    final String? comment,
+    @JsonKey(name: 'driverRating', includeIfNull: false)
+    final int? driverRating,
+    @JsonKey(includeIfNull: false) final String? comment,
   }) = _$SubmitRatingRequestImpl;
 
   factory _SubmitRatingRequest.fromJson(Map<String, dynamic> json) =
@@ -5292,9 +5303,10 @@ abstract class _SubmitRatingRequest implements SubmitRatingRequest {
   @JsonKey(name: 'restaurantRating')
   int get restaurantRating;
   @override
-  @JsonKey(name: 'driverRating')
+  @JsonKey(name: 'driverRating', includeIfNull: false)
   int? get driverRating;
   @override
+  @JsonKey(includeIfNull: false)
   String? get comment;
 
   /// Create a copy of SubmitRatingRequest
@@ -5668,7 +5680,9 @@ UpdateProfileRequest _$UpdateProfileRequestFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UpdateProfileRequest {
+  @JsonKey(includeIfNull: false)
   String? get name => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get email => throw _privateConstructorUsedError;
 
   /// Serializes this UpdateProfileRequest to a JSON map.
@@ -5688,7 +5702,10 @@ abstract class $UpdateProfileRequestCopyWith<$Res> {
     $Res Function(UpdateProfileRequest) then,
   ) = _$UpdateProfileRequestCopyWithImpl<$Res, UpdateProfileRequest>;
   @useResult
-  $Res call({String? name, String? email});
+  $Res call({
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(includeIfNull: false) String? email,
+  });
 }
 
 /// @nodoc
@@ -5734,7 +5751,10 @@ abstract class _$$UpdateProfileRequestImplCopyWith<$Res>
   ) = __$$UpdateProfileRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? name, String? email});
+  $Res call({
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(includeIfNull: false) String? email,
+  });
 }
 
 /// @nodoc
@@ -5769,14 +5789,19 @@ class __$$UpdateProfileRequestImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$UpdateProfileRequestImpl implements _UpdateProfileRequest {
-  const _$UpdateProfileRequestImpl({this.name, this.email});
+  const _$UpdateProfileRequestImpl({
+    @JsonKey(includeIfNull: false) this.name,
+    @JsonKey(includeIfNull: false) this.email,
+  });
 
   factory _$UpdateProfileRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$UpdateProfileRequestImplFromJson(json);
 
   @override
+  @JsonKey(includeIfNull: false)
   final String? name;
   @override
+  @JsonKey(includeIfNull: false)
   final String? email;
 
   @override
@@ -5817,16 +5842,18 @@ class _$UpdateProfileRequestImpl implements _UpdateProfileRequest {
 
 abstract class _UpdateProfileRequest implements UpdateProfileRequest {
   const factory _UpdateProfileRequest({
-    final String? name,
-    final String? email,
+    @JsonKey(includeIfNull: false) final String? name,
+    @JsonKey(includeIfNull: false) final String? email,
   }) = _$UpdateProfileRequestImpl;
 
   factory _UpdateProfileRequest.fromJson(Map<String, dynamic> json) =
       _$UpdateProfileRequestImpl.fromJson;
 
   @override
+  @JsonKey(includeIfNull: false)
   String? get name;
   @override
+  @JsonKey(includeIfNull: false)
   String? get email;
 
   /// Create a copy of UpdateProfileRequest

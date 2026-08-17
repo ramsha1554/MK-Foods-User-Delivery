@@ -486,12 +486,17 @@ mixin _$DeliveryAddressDetail {
   String get label => throw _privateConstructorUsedError;
   @JsonKey(name: 'fullAddress')
   String get fullAddress => throw _privateConstructorUsedError; // GeoPoint? location,
+  @JsonKey(includeIfNull: false)
   double? get longitude => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   double? get latitude => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get street => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get city => throw _privateConstructorUsedError;
+  @JsonKey(includeIfNull: false)
   String? get postcode => throw _privateConstructorUsedError;
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   String? get deliveryInstructions => throw _privateConstructorUsedError;
 
   /// Serializes this DeliveryAddressDetail to a JSON map.
@@ -514,12 +519,13 @@ abstract class $DeliveryAddressDetailCopyWith<$Res> {
   $Res call({
     String label,
     @JsonKey(name: 'fullAddress') String fullAddress,
-    double? longitude,
-    double? latitude,
-    String? street,
-    String? city,
-    String? postcode,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(includeIfNull: false) double? longitude,
+    @JsonKey(includeIfNull: false) double? latitude,
+    @JsonKey(includeIfNull: false) String? street,
+    @JsonKey(includeIfNull: false) String? city,
+    @JsonKey(includeIfNull: false) String? postcode,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   });
 }
 
@@ -602,12 +608,13 @@ abstract class _$$DeliveryAddressDetailImplCopyWith<$Res>
   $Res call({
     String label,
     @JsonKey(name: 'fullAddress') String fullAddress,
-    double? longitude,
-    double? latitude,
-    String? street,
-    String? city,
-    String? postcode,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(includeIfNull: false) double? longitude,
+    @JsonKey(includeIfNull: false) double? latitude,
+    @JsonKey(includeIfNull: false) String? street,
+    @JsonKey(includeIfNull: false) String? city,
+    @JsonKey(includeIfNull: false) String? postcode,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   });
 }
 
@@ -680,12 +687,13 @@ class _$DeliveryAddressDetailImpl implements _DeliveryAddressDetail {
   const _$DeliveryAddressDetailImpl({
     required this.label,
     @JsonKey(name: 'fullAddress') required this.fullAddress,
-    this.longitude,
-    this.latitude,
-    this.street,
-    this.city,
-    this.postcode,
-    @JsonKey(name: 'deliveryInstructions') this.deliveryInstructions,
+    @JsonKey(includeIfNull: false) this.longitude,
+    @JsonKey(includeIfNull: false) this.latitude,
+    @JsonKey(includeIfNull: false) this.street,
+    @JsonKey(includeIfNull: false) this.city,
+    @JsonKey(includeIfNull: false) this.postcode,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    this.deliveryInstructions,
   });
 
   factory _$DeliveryAddressDetailImpl.fromJson(Map<String, dynamic> json) =>
@@ -698,17 +706,22 @@ class _$DeliveryAddressDetailImpl implements _DeliveryAddressDetail {
   final String fullAddress;
   // GeoPoint? location,
   @override
+  @JsonKey(includeIfNull: false)
   final double? longitude;
   @override
+  @JsonKey(includeIfNull: false)
   final double? latitude;
   @override
+  @JsonKey(includeIfNull: false)
   final String? street;
   @override
+  @JsonKey(includeIfNull: false)
   final String? city;
   @override
+  @JsonKey(includeIfNull: false)
   final String? postcode;
   @override
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   final String? deliveryInstructions;
 
   @override
@@ -772,12 +785,13 @@ abstract class _DeliveryAddressDetail implements DeliveryAddressDetail {
   const factory _DeliveryAddressDetail({
     required final String label,
     @JsonKey(name: 'fullAddress') required final String fullAddress,
-    final double? longitude,
-    final double? latitude,
-    final String? street,
-    final String? city,
-    final String? postcode,
-    @JsonKey(name: 'deliveryInstructions') final String? deliveryInstructions,
+    @JsonKey(includeIfNull: false) final double? longitude,
+    @JsonKey(includeIfNull: false) final double? latitude,
+    @JsonKey(includeIfNull: false) final String? street,
+    @JsonKey(includeIfNull: false) final String? city,
+    @JsonKey(includeIfNull: false) final String? postcode,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    final String? deliveryInstructions,
   }) = _$DeliveryAddressDetailImpl;
 
   factory _DeliveryAddressDetail.fromJson(Map<String, dynamic> json) =
@@ -789,17 +803,22 @@ abstract class _DeliveryAddressDetail implements DeliveryAddressDetail {
   @JsonKey(name: 'fullAddress')
   String get fullAddress; // GeoPoint? location,
   @override
+  @JsonKey(includeIfNull: false)
   double? get longitude;
   @override
+  @JsonKey(includeIfNull: false)
   double? get latitude;
   @override
+  @JsonKey(includeIfNull: false)
   String? get street;
   @override
+  @JsonKey(includeIfNull: false)
   String? get city;
   @override
+  @JsonKey(includeIfNull: false)
   String? get postcode;
   @override
-  @JsonKey(name: 'deliveryInstructions')
+  @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
   String? get deliveryInstructions;
 
   /// Create a copy of DeliveryAddressDetail

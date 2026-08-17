@@ -31,7 +31,8 @@ Map<String, dynamic> _$$SaveAddressRequestImplToJson(
   'longitude': instance.longitude,
   'latitude': instance.latitude,
   'isDefault': instance.isDefault,
-  'deliveryInstructions': instance.deliveryInstructions,
+  if (instance.deliveryInstructions case final value?)
+    'deliveryInstructions': value,
 };
 
 _$AddressImpl _$$AddressImplFromJson(Map<String, dynamic> json) =>
@@ -384,7 +385,7 @@ _$CancelOrderRequestImpl _$$CancelOrderRequestImplFromJson(
 
 Map<String, dynamic> _$$CancelOrderRequestImplToJson(
   _$CancelOrderRequestImpl instance,
-) => <String, dynamic>{'reason': instance.reason};
+) => <String, dynamic>{if (instance.reason case final value?) 'reason': value};
 
 _$CreatePaymentIntentRequestImpl _$$CreatePaymentIntentRequestImplFromJson(
   Map<String, dynamic> json,
@@ -422,8 +423,8 @@ Map<String, dynamic> _$$SubmitRatingRequestImplToJson(
 ) => <String, dynamic>{
   'orderId': instance.orderId,
   'restaurantRating': instance.restaurantRating,
-  'driverRating': instance.driverRating,
-  'comment': instance.comment,
+  if (instance.driverRating case final value?) 'driverRating': value,
+  if (instance.comment case final value?) 'comment': value,
 };
 
 _$RatingResponseImpl _$$RatingResponseImplFromJson(Map<String, dynamic> json) =>
@@ -464,4 +465,7 @@ _$UpdateProfileRequestImpl _$$UpdateProfileRequestImplFromJson(
 
 Map<String, dynamic> _$$UpdateProfileRequestImplToJson(
   _$UpdateProfileRequestImpl instance,
-) => <String, dynamic>{'name': instance.name, 'email': instance.email};
+) => <String, dynamic>{
+  if (instance.name case final value?) 'name': value,
+  if (instance.email case final value?) 'email': value,
+};

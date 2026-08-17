@@ -60,12 +60,13 @@ Map<String, dynamic> _$$DeliveryAddressDetailImplToJson(
 ) => <String, dynamic>{
   'label': instance.label,
   'fullAddress': instance.fullAddress,
-  'longitude': instance.longitude,
-  'latitude': instance.latitude,
-  'street': instance.street,
-  'city': instance.city,
-  'postcode': instance.postcode,
-  'deliveryInstructions': instance.deliveryInstructions,
+  if (instance.longitude case final value?) 'longitude': value,
+  if (instance.latitude case final value?) 'latitude': value,
+  if (instance.street case final value?) 'street': value,
+  if (instance.city case final value?) 'city': value,
+  if (instance.postcode case final value?) 'postcode': value,
+  if (instance.deliveryInstructions case final value?)
+    'deliveryInstructions': value,
 };
 
 _$RestaurantAddressImpl _$$RestaurantAddressImplFromJson(

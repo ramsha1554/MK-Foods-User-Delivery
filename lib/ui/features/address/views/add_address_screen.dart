@@ -11,7 +11,23 @@ import '../providers/address_provider.dart';
 
 class AddAddressScreen extends ConsumerStatefulWidget {
   final Address? editAddress;
-  const AddAddressScreen({super.key, this.editAddress});
+  final double? initialLatitude;
+  final double? initialLongitude;
+  final String? initialAddress;
+  final String? initialStreet;
+  final String? initialCity;
+  final String? initialPostcode;
+
+  const AddAddressScreen({
+    super.key,
+    this.editAddress,
+    this.initialLatitude,
+    this.initialLongitude,
+    this.initialAddress,
+    this.initialStreet,
+    this.initialCity,
+    this.initialPostcode,
+  });
 
   @override
   ConsumerState<AddAddressScreen> createState() => _AddAddressScreenState();
@@ -61,6 +77,33 @@ class _AddAddressScreenState extends ConsumerState<AddAddressScreen> {
       final addressState = ref.read(addressProvider);
       _isFirstAddress = addressState.addresses.isEmpty;
       _isDefault = _isFirstAddress;
+      // Pre-fill from the map picker (if any) so the user keeps the chosen
+      // spot; all fields remain editable.
+      if (widget.initialLatitude != null) {
+        _latController.text = widget.initialLatitude.toString();
+      }
+      if (widget.initialLongitude != null) {
+        _lngController.text = widget.initialLongitude.toString();
+      }
+      final initialAddress = widget.initialAddress;
+      if (initialAddress != null && initialAddress.trim().isNotEmpty) {
+        _fullAddressController.text = initialAddress.trim();
+      }
+      // Populate the individual required fields from the map picker. Fields
+      // that couldn't be resolved are left empty so the user fills them in
+      // manually rather than submitting an empty required value.
+      final initialStreet = widget.initialStreet;
+      if (initialStreet != null && initialStreet.trim().isNotEmpty) {
+        _streetController.text = initialStreet.trim();
+      }
+      final initialCity = widget.initialCity;
+      if (initialCity != null && initialCity.trim().isNotEmpty) {
+        _cityController.text = initialCity.trim();
+      }
+      final initialPostcode = widget.initialPostcode;
+      if (initialPostcode != null && initialPostcode.trim().isNotEmpty) {
+        _postcodeController.text = initialPostcode.trim();
+      }
     }
   }
 
