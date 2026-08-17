@@ -21,7 +21,8 @@ class SaveAddressRequest with _$SaveAddressRequest {
     required double longitude,
     required double latitude,
     @JsonKey(name: 'isDefault') @Default(false) bool isDefault,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   }) = _SaveAddressRequest;
 
   factory SaveAddressRequest.fromJson(Map<String, dynamic> json) =>
@@ -249,7 +250,7 @@ class MyOrderRestaurant with _$MyOrderRestaurant {
 @freezed
 class CancelOrderRequest with _$CancelOrderRequest {
   const factory CancelOrderRequest({
-    String? reason,
+    @JsonKey(includeIfNull: false) String? reason,
   }) = _CancelOrderRequest;
 
   factory CancelOrderRequest.fromJson(Map<String, dynamic> json) =>
@@ -290,8 +291,8 @@ class SubmitRatingRequest with _$SubmitRatingRequest {
   const factory SubmitRatingRequest({
     @JsonKey(name: 'orderId') required String orderId,
     @JsonKey(name: 'restaurantRating') required int restaurantRating,
-    @JsonKey(name: 'driverRating') int? driverRating,
-    String? comment,
+    @JsonKey(name: 'driverRating', includeIfNull: false) int? driverRating,
+    @JsonKey(includeIfNull: false) String? comment,
   }) = _SubmitRatingRequest;
 
   factory SubmitRatingRequest.fromJson(Map<String, dynamic> json) =>
@@ -323,8 +324,8 @@ class RatingResponse with _$RatingResponse {
 @freezed
 class UpdateProfileRequest with _$UpdateProfileRequest {
   const factory UpdateProfileRequest({
-    String? name,
-    String? email,
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(includeIfNull: false) String? email,
   }) = _UpdateProfileRequest;
 
   factory UpdateProfileRequest.fromJson(Map<String, dynamic> json) =>

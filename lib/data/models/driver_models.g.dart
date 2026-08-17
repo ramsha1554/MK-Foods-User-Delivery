@@ -16,8 +16,8 @@ _$RegisterDriverRequestImpl _$$RegisterDriverRequestImplFromJson(
 Map<String, dynamic> _$$RegisterDriverRequestImplToJson(
   _$RegisterDriverRequestImpl instance,
 ) => <String, dynamic>{
-  'name': instance.name,
-  'vehicleType': instance.vehicleType,
+  if (instance.name case final value?) 'name': value,
+  if (instance.vehicleType case final value?) 'vehicleType': value,
 };
 
 _$DriverProfileImpl _$$DriverProfileImplFromJson(Map<String, dynamic> json) =>

@@ -36,12 +36,13 @@ class DeliveryAddressDetail with _$DeliveryAddressDetail {
     required String label,
     @JsonKey(name: 'fullAddress') required String fullAddress,
     // GeoPoint? location,
-    double? longitude,
-    double? latitude,
-    String? street,
-    String? city,
-    String? postcode,
-    @JsonKey(name: 'deliveryInstructions') String? deliveryInstructions,
+    @JsonKey(includeIfNull: false) double? longitude,
+    @JsonKey(includeIfNull: false) double? latitude,
+    @JsonKey(includeIfNull: false) String? street,
+    @JsonKey(includeIfNull: false) String? city,
+    @JsonKey(includeIfNull: false) String? postcode,
+    @JsonKey(name: 'deliveryInstructions', includeIfNull: false)
+    String? deliveryInstructions,
   }) = _DeliveryAddressDetail;
 
   factory DeliveryAddressDetail.fromJson(Map<String, dynamic> json) =>

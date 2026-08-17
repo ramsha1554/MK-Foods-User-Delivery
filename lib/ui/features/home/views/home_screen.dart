@@ -9,7 +9,9 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../profile/views/profile_screen.dart';
 import '../../address/providers/address_provider.dart';
+import '../../address/views/add_address_screen.dart';
 import '../../address/views/address_list_screen.dart';
+import '../../address/views/map_address_picker_screen.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../auth/views/onboarding_screen.dart';
 import '../../../../core/animations/app_page_transitions.dart';
@@ -416,10 +418,32 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         icon: LucideIcons.mapPin,
         title: 'Add a delivery address',
         message: 'We need your address to show restaurants near you.',
+        actionLabel: 'Use My Current Location',
+        onAction: _openMapPicker,
       );
     }
 
     return _buildDiscoveryBody(context, defaultAddress, restaurantState);
+  }
+
+  Future<void> _openMapPicker() async {
+    final pick = await Navigator.of(context).push<MapAddressPick>(
+      MaterialPageRoute(builder: (_) => const MapAddressPickerScreen()),
+    );
+    if (pick == null || !mounted) return;
+    // Continue into the existing address form, pre-filled with the picked spot.
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddAddressScreen(
+          initialLatitude: pick.latitude,
+          initialLongitude: pick.longitude,
+          initialAddress: pick.address,
+          initialStreet: pick.street,
+          initialCity: pick.city,
+          initialPostcode: pick.postcode,
+        ),
+      ),
+    );
   }
 }
 
@@ -427,13 +451,21 @@ class _EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;
   final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
-  const _EmptyState({required this.icon, required this.title, required this.message});
+  const _EmptyState({
+    required this.icon,
+    required this.title,
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -447,6 +479,17 @@ class _EmptyState extends StatelessWidget {
             Text(title, style: AppTextStyles.h2, textAlign: TextAlign.center),
             const SizedBox(height: AppSpacing.xs),
             Text(message, style: AppTextStyles.bodySecondary, textAlign: TextAlign.center),
+            if (actionLabel != null && onAction != null) ...[
+              const SizedBox(height: AppSpacing.xxl),
+              ElevatedButton.icon(
+                onPressed: onAction,
+                icon: const Icon(LucideIcons.mapPin, color: Colors.white, size: 18),
+                label: Text(
+                  actionLabel!,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ],
         ),
       ),

@@ -23,8 +23,9 @@ RegisterDriverRequest _$RegisterDriverRequestFromJson(
 
 /// @nodoc
 mixin _$RegisterDriverRequest {
+  @JsonKey(includeIfNull: false)
   String? get name => throw _privateConstructorUsedError;
-  @JsonKey(name: 'vehicleType')
+  @JsonKey(name: 'vehicleType', includeIfNull: false)
   String? get vehicleType => throw _privateConstructorUsedError;
 
   /// Serializes this RegisterDriverRequest to a JSON map.
@@ -44,7 +45,10 @@ abstract class $RegisterDriverRequestCopyWith<$Res> {
     $Res Function(RegisterDriverRequest) then,
   ) = _$RegisterDriverRequestCopyWithImpl<$Res, RegisterDriverRequest>;
   @useResult
-  $Res call({String? name, @JsonKey(name: 'vehicleType') String? vehicleType});
+  $Res call({
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(name: 'vehicleType', includeIfNull: false) String? vehicleType,
+  });
 }
 
 /// @nodoc
@@ -90,7 +94,10 @@ abstract class _$$RegisterDriverRequestImplCopyWith<$Res>
   ) = __$$RegisterDriverRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? name, @JsonKey(name: 'vehicleType') String? vehicleType});
+  $Res call({
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(name: 'vehicleType', includeIfNull: false) String? vehicleType,
+  });
 }
 
 /// @nodoc
@@ -127,17 +134,18 @@ class __$$RegisterDriverRequestImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RegisterDriverRequestImpl implements _RegisterDriverRequest {
   const _$RegisterDriverRequestImpl({
-    this.name,
-    @JsonKey(name: 'vehicleType') this.vehicleType,
+    @JsonKey(includeIfNull: false) this.name,
+    @JsonKey(name: 'vehicleType', includeIfNull: false) this.vehicleType,
   });
 
   factory _$RegisterDriverRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$RegisterDriverRequestImplFromJson(json);
 
   @override
+  @JsonKey(includeIfNull: false)
   final String? name;
   @override
-  @JsonKey(name: 'vehicleType')
+  @JsonKey(name: 'vehicleType', includeIfNull: false)
   final String? vehicleType;
 
   @override
@@ -179,17 +187,19 @@ class _$RegisterDriverRequestImpl implements _RegisterDriverRequest {
 
 abstract class _RegisterDriverRequest implements RegisterDriverRequest {
   const factory _RegisterDriverRequest({
-    final String? name,
-    @JsonKey(name: 'vehicleType') final String? vehicleType,
+    @JsonKey(includeIfNull: false) final String? name,
+    @JsonKey(name: 'vehicleType', includeIfNull: false)
+    final String? vehicleType,
   }) = _$RegisterDriverRequestImpl;
 
   factory _RegisterDriverRequest.fromJson(Map<String, dynamic> json) =
       _$RegisterDriverRequestImpl.fromJson;
 
   @override
+  @JsonKey(includeIfNull: false)
   String? get name;
   @override
-  @JsonKey(name: 'vehicleType')
+  @JsonKey(name: 'vehicleType', includeIfNull: false)
   String? get vehicleType;
 
   /// Create a copy of RegisterDriverRequest

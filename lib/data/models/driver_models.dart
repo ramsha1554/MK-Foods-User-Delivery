@@ -13,8 +13,8 @@ part 'driver_models.g.dart';
 @freezed
 class RegisterDriverRequest with _$RegisterDriverRequest {
   const factory RegisterDriverRequest({
-    String? name,
-    @JsonKey(name: 'vehicleType') String? vehicleType,
+    @JsonKey(includeIfNull: false) String? name,
+    @JsonKey(name: 'vehicleType', includeIfNull: false) String? vehicleType,
   }) = _RegisterDriverRequest;
 
   factory RegisterDriverRequest.fromJson(Map<String, dynamic> json) =>

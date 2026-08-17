@@ -16,6 +16,25 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+## Local setup — API keys
+
+The Google Maps API key is a shared team secret. It is never stored in this
+repository — the real value lives in gitignored local files, and the tracked
+files only contain placeholders.
+
+- **iOS** — copy `ios/Flutter/Secrets.xcconfig.example` to
+  `ios/Flutter/Secrets.xcconfig`, then set `MAPS_API_KEY` to the real key.
+  The key is injected into the app at build time via the `MapsApiKey`
+  Info.plist entry; `Secrets.xcconfig` is gitignored.
+- **Android** — ensure `android/local.properties` contains
+  `MAPS_API_KEY=<real key>` (see `android/local.properties.example`).
+  `local.properties` is already gitignored.
+
+Get the real key from the team password manager — don't ask for it in chat,
+and never commit `Secrets.xcconfig` or `local.properties`. If you don't set
+the key up, the iOS build fails with a clear `Secrets.xcconfig` error so it
+can't be silently forgotten.
+
 ## Font sizes
 
 Never write `TextStyle(fontSize: N)` directly in a screen or widget. Always use
