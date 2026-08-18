@@ -13,6 +13,7 @@ import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../address/providers/address_provider.dart';
+import '../../address/views/map_address_picker_screen.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../orders/views/order_details_screen.dart';
 
@@ -24,8 +25,11 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 }
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
+  static const _useCurrentLocationId = '__use_current_location__';
+
   late final TextEditingController _instructionsController;
   String? _selectedAddressId;
+  MapAddressPick? _currentLocationPick;
   bool _isPlacingOrder = false;
 
   @override
@@ -45,11 +49,39 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   Address? _resolveSelectedAddress(AddressState addressState) {
+    final pick = _currentLocationPick;
+    if (pick != null) {
+
+      return Address(
+        id: 'current-location',
+        label: 'Current Location',
+        fullAddress: pick.address,
+        isDefault: false,
+        location: GeoPoint(
+          type: 'Point',
+          coordinates: [pick.longitude, pick.latitude],
+        ),
+        street: pick.street,
+        city: pick.city,
+        postcode: pick.postcode,
+      );
+    }
     if (_selectedAddressId == null) return null;
     for (final a in addressState.addresses) {
       if (a.id == _selectedAddressId) return a;
     }
     return null;
+  }
+
+  Future<void> _openMapPicker() async {
+    final pick = await Navigator.of(context).push<MapAddressPick>(
+      MaterialPageRoute(builder: (_) => const MapAddressPickerScreen()),
+    );
+    if (pick == null || !mounted) return;
+    setState(() {
+      _currentLocationPick = pick;
+      _selectedAddressId = null;
+    });
   }
 
   Future<void> _pickAddress(AddressState addressState) async {
@@ -85,13 +117,32 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
                 ),
                 onTap: () => Navigator.pop(ctx, addr.id),
               ),
+            const Divider(height: 1, color: AppColors.divider),
+            ListTile(
+              leading: const Icon(LucideIcons.locateFixed, color: AppColors.primary),
+              title: Text('Use Current Location', style: AppTextStyles.cardTitle),
+              subtitle: Text(
+                'Pick your delivery spot on the map',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySecondary,
+              ),
+              onTap: () => Navigator.pop(ctx, _useCurrentLocationId),
+            ),
             const SizedBox(height: AppSpacing.sm),
           ],
         ),
       ),
     );
+    if (picked == _useCurrentLocationId) {
+      await _openMapPicker();
+      return;
+    }
     if (picked != null) {
-      setState(() => _selectedAddressId = picked);
+      setState(() {
+        _selectedAddressId = picked;
+        _currentLocationPick = null;
+      });
     }
   }
 
