@@ -881,12 +881,15 @@ class _QuantityStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 72,
+      // Min-width so the pill stays compact for 1-9 but grows to fit larger
+      // quantities (10, 11, 12, ...) instead of overflowing.
+      constraints: const BoxConstraints(minWidth: 72),
       decoration: BoxDecoration(
         color: AppColors.primary,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _StepperButton(icon: LucideIcons.minus, onTap: onDecrement),
