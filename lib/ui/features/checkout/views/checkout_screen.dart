@@ -13,6 +13,7 @@ import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
 import '../../address/providers/address_provider.dart';
+import '../../address/views/add_address_screen.dart';
 import '../../address/views/map_address_picker_screen.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../orders/views/order_details_screen.dart';
@@ -26,6 +27,7 @@ class CheckoutScreen extends ConsumerStatefulWidget {
 
 class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   static const _useCurrentLocationId = '__use_current_location__';
+  static const _addNewAddressId = '__add_new_address__';
 
   late final TextEditingController _instructionsController;
   String? _selectedAddressId;
@@ -84,6 +86,42 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     });
   }
 
+  Future<void> _openAddAddressFlow() async {
+    final pick = await Navigator.of(context).push<MapAddressPick>(
+      MaterialPageRoute(builder: (_) => const MapAddressPickerScreen()),
+    );
+    if (pick == null || !mounted) return;
+
+    final idsBefore = ref.read(addressProvider).addresses.map((a) => a.id).toSet();
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddAddressScreen(
+          initialLatitude: pick.latitude,
+          initialLongitude: pick.longitude,
+          initialAddress: pick.address,
+          initialStreet: pick.street,
+          initialCity: pick.city,
+          initialPostcode: pick.postcode,
+        ),
+      ),
+    );
+    if (!mounted) return;
+
+    Address? newAddress;
+    for (final a in ref.read(addressProvider).addresses) {
+      if (!idsBefore.contains(a.id)) {
+        newAddress = a;
+        break;
+      }
+    }
+    if (newAddress == null) return;
+
+    setState(() {
+      _selectedAddressId = newAddress!.id;
+      _currentLocationPick = null;
+    });
+  }
+
   Future<void> _pickAddress(AddressState addressState) async {
     final picked = await showModalBottomSheet<String>(
       context: context,
@@ -129,6 +167,17 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
               ),
               onTap: () => Navigator.pop(ctx, _useCurrentLocationId),
             ),
+            ListTile(
+              leading: const Icon(LucideIcons.plus, color: AppColors.primary),
+              title: Text('Add New Address', style: AppTextStyles.cardTitle),
+              subtitle: Text(
+                'Pick a spot on the map and save it',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySecondary,
+              ),
+              onTap: () => Navigator.pop(ctx, _addNewAddressId),
+            ),
             const SizedBox(height: AppSpacing.sm),
           ],
         ),
@@ -136,6 +185,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
     if (picked == _useCurrentLocationId) {
       await _openMapPicker();
+      return;
+    }
+    if (picked == _addNewAddressId) {
+      await _openAddAddressFlow();
       return;
     }
     if (picked != null) {
