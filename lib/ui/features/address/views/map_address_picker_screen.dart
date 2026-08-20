@@ -59,6 +59,9 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
   bool _isGeocoding = false;
   bool _isInitializing = false;
   bool _canShowMyLocation = false;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isSearching = false;
+  String? _searchError;
 
   // Monotonic guard so a stale reverse-geocode response can never overwrite a
   // newer one (e.g. user moves A -> B, A's response arrives after B's).
@@ -66,6 +69,7 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
 
   @override
   void dispose() {
+    _searchController.dispose();
     _mapController = null;
     super.dispose();
   }
@@ -153,6 +157,47 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
     } finally {
       _isInitializing = false;
     }
+  }
+
+  Future<void> _searchLocation() async {
+    final query = _searchController.text.trim();
+    if (query.isEmpty || _isSearching) return;
+    FocusScope.of(context).unfocus();
+    setState(() {
+      _isSearching = true;
+      _searchError = null;
+    });
+
+    List<Location> results;
+    try {
+      results = await locationFromAddress(query).timeout(const Duration(seconds: 12));
+    } catch (e) {
+      AppLog.w(
+        '[MAP]',
+        'search',
+        'locationFromAddress failed',
+        {'query': query, 'error': e.toString()},
+      );
+      results = const [];
+    }
+
+    if (!mounted) return;
+    setState(() => _isSearching = false);
+
+    if (results.isEmpty) {
+      setState(() {
+        _searchError = "Couldn't find that location — try a different search";
+      });
+      return;
+    }
+
+    final first = results.first;
+    await _mapController?.animateCamera(
+      CameraUpdate.newLatLngZoom(
+        LatLng(first.latitude, first.longitude),
+        _defaultZoom,
+      ),
+    );
   }
 
   Future<LatLng?> _cameraCenter() async {
@@ -291,6 +336,32 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
                   alignment: Alignment.center,
                   child: _CenterPin(),
                 ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        AppSpacing.lg,
+                        kToolbarHeight,
+                        AppSpacing.lg,
+                        0,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildSearchField(),
+                          if (_searchError != null) ...[
+                            const SizedBox(height: AppSpacing.sm),
+                            _buildSearchError(_searchError!),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // Re-centre on the user's current location.
                 Positioned(
                   top: AppSpacing.md,
@@ -309,6 +380,69 @@ class _MapAddressPickerScreenState extends State<MapAddressPickerScreen> {
             ),
           ),
           _buildBottomPanel(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Material(
+      elevation: 3,
+      shadowColor: AppColors.shadow,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      color: AppColors.surface,
+      child: TextField(
+        controller: _searchController,
+        textInputAction: TextInputAction.search,
+        onSubmitted: (_) => _searchLocation(),
+        style: AppTextStyles.body,
+        decoration: InputDecoration(
+          hintText: 'Search area, street, or postcode',
+          hintStyle: AppTextStyles.bodySecondary,
+          prefixIcon: const Icon(LucideIcons.search, size: 20, color: AppColors.primary),
+          suffixIcon: _isSearching
+              ? const Padding(
+                  padding: EdgeInsets.all(14),
+                  child: SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary),
+                  ),
+                )
+              : IconButton(
+                  onPressed: _searchLocation,
+                  tooltip: 'Search',
+                  icon: const Icon(LucideIcons.search, size: 20, color: AppColors.primary),
+                ),
+          border: InputBorder.none,
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchError(String message) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.sm),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        boxShadow: const [
+          BoxShadow(color: AppColors.shadow, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(LucideIcons.alertCircle, size: 14, color: AppColors.error),
+          const SizedBox(width: AppSpacing.xs),
+          Flexible(
+            child: Text(
+              message,
+              style: AppTextStyles.caption.copyWith(color: AppColors.error),
+            ),
+          ),
         ],
       ),
     );
