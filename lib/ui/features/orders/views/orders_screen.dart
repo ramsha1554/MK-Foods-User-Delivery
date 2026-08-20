@@ -8,6 +8,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../providers/orders_provider.dart';
 import 'order_details_screen.dart';
 
@@ -59,7 +60,7 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(title: const Text('My Orders')),
       body: state.isLoading && state.orders.isEmpty
-          ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+          ? const _OrdersListSkeleton()
           : state.orders.isEmpty
               ? Center(
                   child: Padding(
@@ -203,6 +204,64 @@ class _OrderCard extends StatelessWidget {
                         style: TextButton.styleFrom(foregroundColor: AppColors.error),
                         child: const Text('Cancel'),
                       ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrdersListSkeleton extends StatelessWidget {
+  const _OrdersListSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonPulse(
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        children: const [
+          _OrderCardSkeleton(),
+          _OrderCardSkeleton(),
+          _OrderCardSkeleton(),
+          _OrderCardSkeleton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrderCardSkeleton extends StatelessWidget {
+  const _OrderCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: const Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: SkeletonText(width: double.infinity, height: 16)),
+              SizedBox(width: AppSpacing.md),
+              SkeletonBox(width: 56, height: 20, radius: 6),
+            ],
+          ),
+          SizedBox(height: 8),
+          SkeletonText(width: 100, height: 12),
+          SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              SkeletonText(width: 60, height: 14),
+              Spacer(),
+              SkeletonBox(width: 56, height: 24, radius: 8),
             ],
           ),
         ],

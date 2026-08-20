@@ -3,6 +3,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../models/menu_category.dart';
 
 class MenuCategoryChips extends StatelessWidget {
@@ -128,18 +129,14 @@ class _ChipSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return const SizedBox(
       width: 80,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 56,
-            height: 56,
-            decoration: const BoxDecoration(color: AppColors.cardBorder, shape: BoxShape.circle),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-          Container(width: 44, height: 8, color: AppColors.cardBorder),
+          SkeletonCircle(size: 56),
+          SizedBox(height: AppSpacing.xs),
+          SkeletonText(width: 44, height: 8),
         ],
       ),
     );

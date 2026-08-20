@@ -13,6 +13,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../../address/views/address_list_screen.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../../orders/views/orders_screen.dart';
@@ -120,7 +121,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ),
       body: profileAsync.when(
         loading: () => fallbackUser == null
-            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            ? const _ProfileSkeleton()
             : _buildContent(fallbackUser),
         error: (err, _) => fallbackUser != null
             ? _buildContent(fallbackUser)
@@ -310,6 +311,83 @@ class _MenuTile extends StatelessWidget {
             const Icon(LucideIcons.chevronRight, size: 18, color: AppColors.textHint),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ProfileSkeleton extends StatelessWidget {
+  const _ProfileSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonPulse(
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        children: const [
+          Center(
+            child: Column(
+              children: [
+                SkeletonCircle(size: 76),
+                SizedBox(height: AppSpacing.md),
+                SkeletonText(width: 140, height: 18),
+                SizedBox(height: 2),
+                SkeletonText(width: 110, height: 12),
+              ],
+            ),
+          ),
+          SizedBox(height: AppSpacing.xl),
+          _InfoRowSkeleton(),
+          _InfoRowSkeleton(),
+          SizedBox(height: AppSpacing.xl),
+          _MenuTileSkeleton(),
+          _MenuTileSkeleton(),
+          _MenuTileSkeleton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRowSkeleton extends StatelessWidget {
+  const _InfoRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          SkeletonCircle(size: 16),
+          SizedBox(width: AppSpacing.sm),
+          SkeletonText(width: 180, height: 12),
+        ],
+      ),
+    );
+  }
+}
+
+class _MenuTileSkeleton extends StatelessWidget {
+  const _MenuTileSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.sm),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: const Row(
+        children: [
+          SkeletonCircle(size: 18),
+          SizedBox(width: AppSpacing.md),
+          Expanded(child: SkeletonText(width: double.infinity, height: 14)),
+          SizedBox(width: AppSpacing.sm),
+          SkeletonCircle(size: 18),
+        ],
       ),
     );
   }

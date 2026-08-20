@@ -9,6 +9,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../providers/order_details_provider.dart';
 import '../providers/orders_provider.dart';
 
@@ -29,7 +30,7 @@ class OrderDetailsScreen extends ConsumerWidget {
       body: RefreshIndicator(
         onRefresh: () => ref.refresh(orderDetailsProvider(orderId).future),
         child: orderAsync.when(
-          loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+          loading: () => const _OrderDetailsSkeleton(),
           error: (error, _) => ListView(
             padding: const EdgeInsets.all(AppSpacing.xl),
             children: [
@@ -234,6 +235,115 @@ class _SummaryRow extends StatelessWidget {
         children: [
           Text(label, style: AppTextStyles.bodySecondary),
           Text('£${amount.toStringAsFixed(2)}', style: AppTextStyles.body),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrderDetailsSkeleton extends StatelessWidget {
+  const _OrderDetailsSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonPulse(
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        children: const [
+          _StatusBannerSkeleton(),
+          SizedBox(height: AppSpacing.xl),
+          SkeletonText(width: 48, height: 16),
+          SizedBox(height: AppSpacing.sm),
+          _ItemRowSkeleton(),
+          _ItemRowSkeleton(),
+          _ItemRowSkeleton(),
+          Divider(height: AppSpacing.xl),
+          SkeletonText(width: 100, height: 16),
+          SizedBox(height: AppSpacing.sm),
+          _SummaryRowSkeleton(),
+          _SummaryRowSkeleton(),
+          _SummaryRowSkeleton(),
+          SizedBox(height: AppSpacing.xs),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SkeletonText(width: 60, height: 16),
+              SkeletonText(width: 70, height: 16),
+            ],
+          ),
+          Divider(height: AppSpacing.xl),
+          SkeletonText(width: 80, height: 16),
+          SizedBox(height: AppSpacing.sm),
+          SkeletonText(width: 140, height: 14),
+          SizedBox(height: 4),
+          SkeletonText(width: double.infinity, height: 12),
+          SizedBox(height: AppSpacing.xxl),
+          SkeletonBox(width: double.infinity, height: 48, radius: 16),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusBannerSkeleton extends StatelessWidget {
+  const _StatusBannerSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonCard(
+      radius: 12,
+      child: Row(
+        children: [
+          SkeletonCircle(size: 20),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonText(width: 140, height: 14),
+                SizedBox(height: 4),
+                SkeletonText(width: 180, height: 11),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ItemRowSkeleton extends StatelessWidget {
+  const _ItemRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SkeletonText(width: 24, height: 14),
+          SizedBox(width: AppSpacing.md),
+          Expanded(child: SkeletonText(width: double.infinity, height: 14)),
+          SkeletonText(width: 48, height: 14),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryRowSkeleton extends StatelessWidget {
+  const _SummaryRowSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SkeletonText(width: 70, height: 12),
+          SkeletonText(width: 48, height: 12),
         ],
       ),
     );

@@ -7,6 +7,7 @@ import '../../../core/theme/app_avatar_sizes.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../../profile/views/profile_screen.dart';
 import '../../address/providers/address_provider.dart';
 import '../../address/views/add_address_screen.dart';
@@ -350,10 +351,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           const SizedBox(height: AppSpacing.sm),
           if (isFirstLoad)
-            const Padding(
-              padding: EdgeInsets.all(AppSpacing.xxl),
-              child: Center(child: CircularProgressIndicator(color: AppColors.primary)),
-            )
+            const _RestaurantListSkeleton()
           else if (restaurantState.errorMessage != null && restaurantState.restaurants.isEmpty)
             Padding(
               padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -492,6 +490,80 @@ class _EmptyState extends StatelessWidget {
             ],
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RestaurantListSkeleton extends StatelessWidget {
+  const _RestaurantListSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonPulse(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: Column(
+          children: [
+            _RestaurantCardSkeleton(),
+            SizedBox(height: AppSpacing.md),
+            _RestaurantCardSkeleton(),
+            SizedBox(height: AppSpacing.md),
+            _RestaurantCardSkeleton(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RestaurantCardSkeleton extends StatelessWidget {
+  const _RestaurantCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              const AspectRatio(
+                aspectRatio: 16 / 11,
+                child: ColoredBox(color: AppColors.cardBorder),
+              ),
+              const Positioned(
+                top: AppSpacing.sm,
+                right: AppSpacing.sm,
+                child: SkeletonBox(width: 48, height: 18, radius: 6),
+              ),
+              const Positioned(
+                bottom: -18,
+                left: AppSpacing.md,
+                child: SkeletonCircle(size: 40),
+              ),
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppSpacing.md, 22, AppSpacing.md, AppSpacing.md,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonText(width: 160, height: 16),
+                SizedBox(height: AppSpacing.sm),
+                SkeletonText(width: 220, height: 12),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -479,6 +479,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_dialogs.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../../cart/providers/cart_provider.dart';
 import '../../cart/widgets/cart_bottom_sheet.dart';
 import '../providers/restaurant_provider.dart';
@@ -498,7 +499,7 @@ class RestaurantDetailScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: detailAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        loading: () => const _RestaurantDetailSkeleton(),
         error: (err, _) => Center(
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.xxl),
@@ -954,6 +955,191 @@ class _DisabledAddButton extends StatelessWidget {
       child: Text(
         'Add',
         style: AppTextStyles.caption.copyWith(color: AppColors.textHint, fontWeight: FontWeight.w700),
+      ),
+    );
+  }
+}
+
+class _RestaurantDetailSkeleton extends StatelessWidget {
+  const _RestaurantDetailSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonPulse(
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const SkeletonBox(width: double.infinity, height: 320, radius: 0),
+                Positioned(
+                  left: AppSpacing.lg,
+                  right: AppSpacing.lg,
+                  bottom: -36,
+                  child: const _RestaurantInfoBarSkeleton(),
+                ),
+              ],
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 56)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonText(width: 220, height: 14),
+                  SizedBox(height: AppSpacing.sm),
+                  SkeletonText(width: double.infinity, height: 12),
+                  SizedBox(height: 4),
+                  SkeletonText(width: 160, height: 12),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: AppSpacing.lg, bottom: AppSpacing.sm),
+                  child: SkeletonText(width: 44, height: 12),
+                ),
+                SizedBox(
+                  height: 40,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                    itemCount: 4,
+                    separatorBuilder: _separatorBuilder,
+                    itemBuilder: _chipBuilder,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
+          SliverToBoxAdapter(child: Divider(height: 1, color: AppColors.divider)),
+          SliverToBoxAdapter(child: SizedBox(height: AppSpacing.sm)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              _menuItemBuilder,
+              childCount: 4,
+            ),
+          ),
+          SliverToBoxAdapter(child: SizedBox(height: 90)),
+        ],
+      ),
+    );
+  }
+
+  static Widget _separatorBuilder(BuildContext context, int index) {
+    return const SizedBox(width: AppSpacing.sm);
+  }
+
+  static Widget _chipBuilder(BuildContext context, int index) {
+    return const SkeletonBox(width: 80, height: 32, radius: AppRadius.pill);
+  }
+
+  static Widget _menuItemBuilder(BuildContext context, int index) {
+    return const _MenuItemSkeleton();
+  }
+}
+
+class _RestaurantInfoBarSkeleton extends StatelessWidget {
+  const _RestaurantInfoBarSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SkeletonCard(
+      radius: AppRadius.lg,
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.sm, horizontal: AppSpacing.xs),
+      child: Row(
+        children: [
+          _InfoCellSkeleton(),
+          _CellDividerSkeleton(),
+          _InfoCellSkeleton(),
+          _CellDividerSkeleton(),
+          _InfoCellSkeleton(),
+          _CellDividerSkeleton(),
+          _InfoCellSkeleton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoCellSkeleton extends StatelessWidget {
+  const _InfoCellSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SkeletonCircle(size: 14),
+          SizedBox(height: 4),
+          SkeletonText(width: 40, height: 9),
+          SizedBox(height: 2),
+          SkeletonText(width: 52, height: 9),
+        ],
+      ),
+    );
+  }
+}
+
+class _CellDividerSkeleton extends StatelessWidget {
+  const _CellDividerSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(width: 1, height: 36, color: AppColors.divider);
+  }
+}
+
+class _MenuItemSkeleton extends StatelessWidget {
+  const _MenuItemSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: AppSpacing.lg, vertical: 6),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SkeletonBox(width: 72, height: 72, radius: AppRadius.sm),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonText(width: 140, height: 14),
+                SizedBox(height: 6),
+                SkeletonText(width: double.infinity, height: 11),
+                SizedBox(height: 4),
+                SkeletonText(width: 110, height: 11),
+                SizedBox(height: AppSpacing.sm),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SkeletonText(width: 50, height: 14),
+                    SkeletonBox(width: 72, height: 28, radius: 8),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -11,6 +11,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/widgets/app_bottom_sheet.dart';
 import '../../../core/widgets/app_dialogs.dart';
 import '../../../core/widgets/app_snackbar.dart';
+import '../../../core/widgets/app_skeleton.dart';
 import '../providers/address_provider.dart';
 import 'add_address_screen.dart';
 
@@ -29,7 +30,7 @@ class AddressListScreen extends ConsumerWidget {
         color: AppColors.primary,
         onRefresh: () => ref.read(addressProvider.notifier).fetchAddresses(),
         child: addressState.isLoading && addressState.addresses.isEmpty
-            ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
+            ? const _AddressListSkeleton()
             : isEmpty
                 ? _buildEmptyState(context)
                 : AppFadeIn(
@@ -334,6 +335,68 @@ class _AddressCard extends StatelessWidget {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _AddressListSkeleton extends StatelessWidget {
+  const _AddressListSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return SkeletonPulse(
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        children: const [
+          _AddressCardSkeleton(),
+          _AddressCardSkeleton(),
+          _AddressCardSkeleton(),
+        ],
+      ),
+    );
+  }
+}
+
+class _AddressCardSkeleton extends StatelessWidget {
+  const _AddressCardSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: const Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 10),
+            child: SkeletonCircle(size: 20),
+          ),
+          SizedBox(width: AppSpacing.md),
+          SkeletonCircle(size: 40),
+          SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: 2, right: 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SkeletonText(width: 80, height: 15),
+                  SizedBox(height: 6),
+                  SkeletonText(width: double.infinity, height: 12),
+                  SizedBox(height: 4),
+                  SkeletonText(width: 160, height: 12),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
